@@ -9,7 +9,7 @@ const clientId = "1095047001559-uqfv7sj3nbph166el14200q2u6rhm38i.apps.googleuser
 import {gapi} from 'gapi-script'
 
 function App() {
-
+  
   useEffect(() => {
     function start() {
       gapi.client.init({
@@ -24,7 +24,7 @@ function App() {
     <>
       <div>
       <h1>Migra</h1>
-      <Login/>
+      <Login />
       <Logout/>
       </div>
       

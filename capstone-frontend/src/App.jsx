@@ -5,6 +5,9 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/Home'
 import LogIn from './pages/LogIn'
 import NoPage from './pages/NoPage'
+import EmergencyContact from './pages/EmergencyContact'
+import FAQ from './pages/FAQ'
+import UserProfile from './pages/UserProfile'
 
 function App() {
   
@@ -15,7 +18,11 @@ function App() {
       <Routes> 
         <Route index element={<LogIn/>}/>
         <Route path ='/home' element={<Home/>}/>
+        <Route path ='/userprofile' element={<UserProfile/>}/>
+        <Route path ='/emergencycontact' element={<EmergencyContact/>}/>
+        <Route path ='/faq' element={<FAQ/>}/>
         
+
         <Route path ='*' element={<NoPage/>}/>
       </Routes>
 

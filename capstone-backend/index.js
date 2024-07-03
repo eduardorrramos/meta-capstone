@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 3000
 app.use(express.json());
 
 
-
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
   })
@@ -34,5 +33,29 @@ app.post('/users', async (req, res) => {
       imgUrl
     }
   })
+
   res.status(201).json(newuser);
+});
+let crossingData= {};
+
+const fetchCrossingData = () => {
+  fetch('https://bwt.cbp.gov/xml/bwt.xml')
+  .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      console.log(response.json);
+      return response.text();
+    })
+    .then(data => {
+      crossingData = data;
+    })
+    .catch(error => {
+      console.error(`Error fetching data: `, error);
+    });
+}
+
+app.get('/borderdata', async (req, res) => {
+  const crossing = await fetchCrossingData();
+  res.json(crossingData);
 });

@@ -1,8 +1,10 @@
 import { GoogleLogin } from 'react-google-login';
 const clientId = "1095047001559-uqfv7sj3nbph166el14200q2u6rhm38i.apps.googleusercontent.com"
+import { useNavigate} from 'react-router-dom'
+
 
 function Login() {
-
+    const navigate = useNavigate()
     const onSuccess = (res) => {
         console.log("Login Success. User: ", res.profileObj);
 
@@ -24,6 +26,7 @@ function Login() {
           .then(response => response.json())
           .then(data => console.log(data))
           .catch(error => console.error(error));
+        navigate('/home');
     }
 
     const onFailure = (res) => {

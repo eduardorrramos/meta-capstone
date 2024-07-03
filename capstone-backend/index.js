@@ -36,3 +36,12 @@ app.post('/users', async (req, res) => {
   })
   res.status(201).json(newuser);
 });
+
+app.get('/users', async (req, res) => {
+  const users = await prisma.user.findMany();
+  res.json(users)
+});
+
+app.get('/home', (req, res) => {
+  res.send('<h1>bruhhh</h1>')
+})

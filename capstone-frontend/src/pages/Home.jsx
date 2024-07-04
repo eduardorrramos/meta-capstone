@@ -1,32 +1,34 @@
 import { useEffect, useState } from 'react';
+import { parseString } from 'xml2js';
+
 
 function Home() {
-    const [crossingData, setCrossingData] = useState([])
-    useEffect(() => {
-        fetchCrossingData();
+    const [readyData, setReadyData] = useState([]);
 
-    }, []);
-    const fetchCrossingData = () => {
-        fetch('https://bwt.cbp.gov/xml/bwt.xml')
-        .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            console.log(response.json);
-            return response.json();
-          })
-          .then(data => {
-            setCrossingData(data)
-          })
-          .catch(error => {
-            console.error(`Error fetching data: `, error);
-          });
-    }
+
+useEffect(() => {
+    fetch('http://localhost:5000/borderdata')
+    .then(response => response.json())
+    .then(data => {
+        setReadyData(data)
+        data.forEach(crossing =>{
+            console.log(crossing.title[0])
+        })
+
+    })
+    }, []); 
+     
+
+      
+
 
     return (
-
+        <> 
         <h1>Home: Testing Application</h1>
-        
-    )
+        {readyData.map(item => (
+        <div>{item.title[0]}</div>
+      ))}
+        </>
+    );
 }
 export default Home

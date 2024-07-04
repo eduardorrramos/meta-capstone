@@ -6,6 +6,8 @@ require('dotenv').config()
 const PORT = process.env.PORT || 3000
 app.use(express.json());
 
+const xml2js = require('xml2js');
+const parser = new xml2js.Parser();
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
@@ -36,26 +38,33 @@ app.post('/users', async (req, res) => {
 
   res.status(201).json(newuser);
 });
-let crossingData= {};
 
-const fetchCrossingData = () => {
-  fetch('https://bwt.cbp.gov/xml/bwt.xml')
+let crossingData= [];
+const fetchCrossingData = async () => {
+  await fetch('https://bwt.cbp.gov/api/bwtrss/getAllPortsRss/Mexico')
   .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log(response.json);
       return response.text();
     })
     .then(data => {
-      crossingData = data;
+      parser.parseString( data, (err, result) => {
+        if (err) {
+            console.error('error', err);
+            return;
+        }
+        console.log(result.rss.channel)
+        crossingData = result.rss.channel[0].item;
+        console.log(crossingData)
+    })
     })
     .catch(error => {
       console.error(`Error fetching data: `, error);
     });
 }
 
-app.get('/borderdata', async (req, res) => {
-  const crossing = await fetchCrossingData();
+app.get('/borderdata', (req, res) => {
+  fetchCrossingData();
   res.json(crossingData);
 });

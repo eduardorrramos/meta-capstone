@@ -17,29 +17,16 @@ function Home() {
         })
         }, []); 
 
-    const fetchCrossingData = () => {
-        fetch('https://bwt.cbp.gov/xml/bwt.xml')
-        .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            console.log(response.json);
-            return response.json();
-          })
-          .then(data => {
-            setCrossingData(data)
-          })
-          .catch(error => {
-            console.error(`Error fetching data: `, error);
-          });
-    }
 
     return (
-<>
-<Header/>
+
+    <div className="container">
+        <Header/>
 
         <h1>Home: Testing Application</h1>
         <h1>Border Crossing Display</h1>
+        <div className="everythinginside">
+
         {readyData.map(item => (
             <div className='border'>
         <div>{item.title[0]}</div>
@@ -47,10 +34,12 @@ function Home() {
         <div>{item.link[0]}</div>
         <div>{item.pubDate[0]}</div>
         <div>{item.guid[0]}</div>
-
-        </div>
+            </div>
       ))}
-        </>
+      </div>
+      
+
+    </div>
     )
 }
 export default Home

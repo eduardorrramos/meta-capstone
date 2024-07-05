@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { parseString } from 'xml2js';
-
+import './Home.css'
 
 function Home() {
     const [readyData, setReadyData] = useState([]);
@@ -17,16 +17,20 @@ useEffect(() => {
 
     })
     }, []); 
-     
-
-      
 
 
     return (
         <> 
         <h1>Home: Testing Application</h1>
         {readyData.map(item => (
+            <div className='border'>
         <div>{item.title[0]}</div>
+        <div>{item.description[0]._}</div>
+        <div>{item.link[0]}</div>
+        <div>{item.pubDate[0]}</div>
+        <div>{item.guid[0]}</div>
+
+        </div>
       ))}
         </>
     );

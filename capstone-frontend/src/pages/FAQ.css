@@ -1,0 +1,15 @@
+.faq-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.faq {
+    background-color: #333;
+    color: #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

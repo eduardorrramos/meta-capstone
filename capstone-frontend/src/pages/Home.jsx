@@ -12,7 +12,7 @@ useEffect(() => {
     .then(data => {
         setReadyData(data)
         data.forEach(crossing =>{
-            console.log(crossing.title[0])
+            // console.log(crossing.title[0])
         })
 
     })

@@ -2,21 +2,27 @@ import { useEffect, useState } from 'react';
 import { parseString } from 'xml2js';
 import './Home.css'
 import Header from '../components/header';
+import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom'
+// import BorderPage from './pages/BorderPage'
+import BorderPage from './BorderPage'
+import {useParams} from 'react-router-dom'
 
 function Home() {
+    const navigate = useNavigate()
+
     const [readyData, setReadyData] = useState([]);
     useEffect(() => {
         fetch('http://localhost:5000/borderdata')
         .then(response => response.json())
         .then(data => {
             setReadyData(data)
-            data.forEach(crossing =>{
-            })
-    
+            // data.forEach(crossing =>{
+            // })
         })
         }, []); 
 
     const parseDescription = (item) => {
+    //    console.log(item)
         const firstsplit = item.split(/(?=Date)/);
         const hours = firstsplit[0]
         const rest = firstsplit[1]
@@ -59,7 +65,7 @@ function Home() {
         const lastready = rest10.indexOf('Ready Lanes');
         const lastgenlane = rest10.substr(0, lastready);
         const rest11 = rest10.substr(lastready, rest10.length);
-        console.log(rest11)
+        // console.log(rest11)
         // continue here ?????
 
         return (
@@ -70,25 +76,33 @@ function Home() {
             </div>
         )
     }
-
+    // const allborders = document.getElementsByClassName('border');
+    const crossingClick = (item) => {
+        console.log(item)
+        navigate(`/borderpage/${item}`)
+        return (
+            <></>
+        )
+    }
+     {/* <div>{parseDescription(item.description[0]._)}</div>
+        <div>{item.link[0]}</div>
+        <div>{item.pubDate[0]}</div>
+        <div>{item.guid[0]}</div> */}
+// console.log(readyData)
     return (
 
     <div className="container">
         <Header/>
 
-        <h1>Home: Testing Application</h1>
-        <h1>Border Crossing Display</h1>
+        <h1>Home: Border Crossing Display</h1>
         <div className="everythinginside">
 
         {readyData.map((item, index) => (
-            <div key={index} className='border'>
+            <div key={index} className='border' onClick={() => crossingClick(index)}>
         <div>{index}</div>
         <div>{item.title[0]}</div>
         
         <div>{parseDescription(item.description[0]._)}</div>
-        <div>{item.link[0]}</div>
-        <div>{item.pubDate[0]}</div>
-        <div>{item.guid[0]}</div>
             </div>
       ))}
       </div>

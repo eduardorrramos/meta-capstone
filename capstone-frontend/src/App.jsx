@@ -8,7 +8,7 @@ import NoPage from './pages/NoPage'
 import EmergencyContact from './pages/EmergencyContact'
 import FAQ from './pages/FAQ'
 import UserProfile from './pages/UserProfile'
-
+import BorderPage from './pages/BorderPage'
 function App() {
   
 
@@ -20,9 +20,8 @@ function App() {
         <Route path ='/home' element={<Home/>}/>
         <Route path ='/userprofile' element={<UserProfile/>}/>
         <Route path ='/emergencycontact' element={<EmergencyContact/>}/>
+        <Route path ='/borderpage/:id' element={<BorderPage/>}/>
         <Route path ='/faq' element={<FAQ/>}/>
-        
-
         <Route path ='*' element={<NoPage/>}/>
       </Routes>
 

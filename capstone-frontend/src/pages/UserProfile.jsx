@@ -24,22 +24,21 @@ function UserProfile() {
     useEffect(() => {
         fetchUserData();
     }, []);
-
-    // const name = userData[0].name;
-    // const gid = userData[0].googleId;
-    // const email = userData[0].email;
-    // const image = userData[0].imgUrl;
-
+    
     console.log(userData)
-    console.log(userData);
+    const name = userData[0].name;
+    const gid = userData[0].googleId;
+    const email = userData[0].email;
+    const image = userData[0].imgUrl;
+
     return (
         <>
         <Header/>
         <h1>User Profile</h1>
-        {/* <h2>{name}</h2>
+        <h2>{name}</h2>
         <h2>{gid}</h2>
         <h2>{email}</h2>
-        <h2>{image}</h2> */}
+        <h2>{image}</h2>
 
         </>
     )

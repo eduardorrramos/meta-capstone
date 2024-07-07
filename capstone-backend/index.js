@@ -35,7 +35,6 @@ app.post('/users', async (req, res) => {
       imgUrl
     }
   })
-
   res.status(201).json(newuser);
 });
 
@@ -76,3 +75,20 @@ app.get('/borderdata', (req, res) => {
   res.json(crossingData);
 });
 
+app.post('/usersposts', async (req, res) => {
+  const {id, userInput, userId, borderNum} = req.body;
+  const newcomment = await prisma.comment.create({
+    data: {
+      id,
+      userId,
+      borderNum,
+      userInput
+    }
+  })
+  res.status(201).json(newcomment);
+});
+
+app.get('/usersposts', async (req, res) => {
+  const comments = await prisma.comment.findMany();
+  res.json(comments)
+});

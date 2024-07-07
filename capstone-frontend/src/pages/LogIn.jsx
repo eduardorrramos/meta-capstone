@@ -17,9 +17,9 @@ function LogIn() {
 
     return (
         <div>
-        <h1>LogIn: Testing Application</h1>
-        <Login/>
-        <Logout/>
+            <h1>LogIn: Testing Application</h1>
+            <Login/>
+            <Logout/>
         </div>
     )
 }

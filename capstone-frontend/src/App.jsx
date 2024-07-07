@@ -11,17 +11,16 @@ import UserProfile from './pages/UserProfile'
 import BorderPage from './pages/BorderPage'
 function App() {
   
-
   return (
     <div>
       <BrowserRouter>
       <Routes> 
         <Route index element={<LogIn/>}/>
-        <Route path ='/home' element={<Home/>}/>
-        <Route path ='/userprofile' element={<UserProfile/>}/>
-        <Route path ='/emergencycontact' element={<EmergencyContact/>}/>
+        <Route path ='/home/:otherid' element={<Home/>}/>
+        <Route path ='/userprofile/:thirdid' element={<UserProfile/>}/>
+        <Route path ='/emergencycontact/:fourthid' element={<EmergencyContact/>}/>
         <Route path ='/borderpage/:id' element={<BorderPage/>}/>
-        <Route path ='/faq' element={<FAQ/>}/>
+        <Route path ='/faq/:fifthid' element={<FAQ/>}/>
         <Route path ='*' element={<NoPage/>}/>
       </Routes>
 

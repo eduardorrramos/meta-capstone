@@ -63,9 +63,7 @@ const fetchCrossingData = async () => {
             console.error('error', err);
             return;
         }
-        console.log(result.rss.channel)
         crossingData = result.rss.channel[0].item;
-        console.log(crossingData)
     })
     })
     .catch(error => {
@@ -77,3 +75,4 @@ app.get('/borderdata', (req, res) => {
   fetchCrossingData();
   res.json(crossingData);
 });
+

@@ -46,11 +46,13 @@ app.get('/users', async (req, res) => {
 app.get('/home', (req, res) => {
   res.send('<h1>bruhhh</h1>')
 })
+
+let crossingData = [];
 let CanadianBorders = [];
 let MexicanBorders = [];
-let crossingData = [];
-
 const fetchCrossingData = async () => {
+  CanadianBorders = [];
+  MexicanBorders = [];
   await fetch('https://bwt.cbp.gov/xml/bwt.xml')
   .then(response => {
       if (!response.ok) {

@@ -9,13 +9,36 @@ function Home() {
     const params = useParams();
     const variable = params.otherid
 
+    async function getBorderData() {
+        const response = await (async () => {
+            return fetch('http://localhost:5000/borderdata');
+        }) (); 
+        const data = await response.json();
+        console.log(data)
+        return data;
+    }
+
     useEffect(() => {
-        fetch('http://localhost:5000/borderdata')
-        .then(response => response.json())
-        .then(data => {
+        getBorderData().then(data => {
             setReadyData(data)
         })
         }, []); 
+
+        /*
+          const loadBorderInfo = (readyData) => {
+        let allMyBorders = []
+        for (let i = 0; i < readyData.length; i++) {
+        allMyBorders.push(
+            <div key={i} className='border' onClick={() => crossingClick(i)}>
+        <div>{i}</div>
+        <div>{readyData[i].title[0]}</div>
+        <div>{parseDescription(readyData[i].description[0]._)}</div>
+            </div>  )
+        }
+        setAllBorders(allMyBorders)
+        console.log(allBorders)
+    }
+    */
 
     const parseDescription = (item) => {
         const firstsplit = item.split(/(?=Date)/);
@@ -80,7 +103,7 @@ function Home() {
     return (
     <div className="container">
         <Header variable={variable}/>
-        <h1>Home: Border Crossing Display</h1>
+        <h1> Crossing Display</h1>
             <div className="everythinginside">
             {readyData.map((item, index) => (
                 <div key={index} className='border' onClick={() => crossingClick(index)}>

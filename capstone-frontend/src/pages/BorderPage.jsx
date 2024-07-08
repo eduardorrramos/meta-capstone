@@ -2,6 +2,7 @@ import Header from "../components/header"
 import { useParams} from 'react-router-dom'
 import { useState, useEffect } from "react";
 import './BorderPage.css'
+
 function BorderPage() {
     const borderindex = useParams();
     const actualborderindex = borderindex.id
@@ -13,12 +14,10 @@ function BorderPage() {
         borderNum: actualborderindex,
         userInput:""
     })
-
     function handle(e){
         const newdata= {...postData}
         newdata[e.target.id]=e.target.value
         setPostData(newdata)
-
     }
     
     function submit(e){
@@ -43,6 +42,7 @@ function BorderPage() {
         for (const item of data) {
             if (item.borderNum == actualborderindex) {
                 specificBorderPosts.push(item)
+                // also need to match user id
             }
         }
         setAllComments(specificBorderPosts)

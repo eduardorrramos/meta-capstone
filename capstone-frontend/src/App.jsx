@@ -1,25 +1,32 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
+import Home from './pages/Home'
+import LogIn from './pages/LogIn'
+import NoPage from './pages/NoPage'
+import EmergencyContact from './pages/EmergencyContact'
+import FAQ from './pages/FAQ'
+import UserProfile from './pages/UserProfile'
+import BorderPage from './pages/BorderPage'
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Migra</h1>
+    <div>
+      <BrowserRouter>
+      <Routes> 
+        <Route index element={<LogIn/>}/>
+        <Route path ='/home/:otherid' element={<Home/>}/>
+        <Route path ='/userprofile/:thirdid' element={<UserProfile/>}/>
+        <Route path ='/emergencycontact/:fourthid' element={<EmergencyContact/>}/>
+        <Route path ='/borderpage/:id' element={<BorderPage/>}/>
+        <Route path ='/faq/:fifthid' element={<FAQ/>}/>
+        <Route path ='*' element={<NoPage/>}/>
+      </Routes>
+
+      </BrowserRouter>      
       
-      
-    </>
+    </div>
   )
 }
 

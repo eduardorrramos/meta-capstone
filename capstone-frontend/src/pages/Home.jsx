@@ -8,89 +8,73 @@ function Home() {
     const navigate = useNavigate()
     const params = useParams();
     const variable = params.otherid
-
+    let allMexicanBorders = []
+    let allCanadianBorders = []
+// made the fetchData() async and used await in hopes of getting rid of delay in 
+// rendering cards upon initial page load when the server is first started -> not functioning as expected
     useEffect(() => {
-        fetch('http://localhost:5000/borderdata')
-        .then(response => response.json())
-        .then(data => {
-            setReadyData(data)
-        })
-        }, []); 
-
-    const parseDescription = (item) => {
-        const firstsplit = item.split(/(?=Date)/);
-        const hours = firstsplit[0]
-        const rest = firstsplit[1]
-        const maxindex = rest.indexOf('Maximum Lanes');
-        const date = rest.substr(0, maxindex);
-        const rest2 = rest.substr(maxindex, rest.length);
-
-        const genlaneindex = rest2.indexOf('General Lanes');
-        const maxlanes = rest2.substr(0, genlaneindex);
-        const rest3 = rest2.substr(genlaneindex, rest2.length);
-
-        const fastlaneindex = rest3.indexOf('Fast Lanes');
-        const genlanes = rest3.substr(0, fastlaneindex);
-        const rest4 = rest3.substr(fastlaneindex, rest3.length);
-
-        const max2laneindex = rest4.indexOf('Maximum Lanes');
-        const max2lane = rest4.substr(0, max2laneindex);
-        const rest5 = rest4.substr(max2laneindex, rest4.length);
-
-        const gen2laneindex = rest5.indexOf('General Lanes');
-        const max3lane = rest5.substr(0, gen2laneindex);
-        const rest6 = rest5.substr(gen2laneindex, rest5.length);
-
-        const sentrilaneindex = rest6.indexOf('Sentri Lanes');
-        const gen2lane = rest6.substr(0, sentrilaneindex);
-        const rest7 = rest6.substr(sentrilaneindex, rest6.length);
-
-        const readylaneindex = rest7.indexOf('Ready Lanes');
-        const sentrilane = rest7.substr(0, readylaneindex);
-        const rest8 = rest7.substr(readylaneindex, rest7.length);
-
-        const max3laneindex = rest8.indexOf('Maximum Lanes');
-        const ready2lane = rest8.substr(0, max3laneindex);
-        const rest9 = rest8.substr(max3laneindex, rest8.length);
-
-        const gen3laneindex = rest9.indexOf('General Lanes');
-        const gen3lane = rest9.substr(0, gen3laneindex);
-        const rest10 = rest9.substr(gen3laneindex, rest9.length);
-
-        const lastready = rest10.indexOf('Ready Lanes');
-        const lastgenlane = rest10.substr(0, lastready);
-        const rest11 = rest10.substr(lastready, rest10.length);
-        // continue here ?????
-        return (
-            <div>
-            <div>{hours}</div>
-            <div>{maxlanes}</div>
-            <div>{genlanes}</div>
-            </div>
-        )
+        async function fetchData() { 
+            const response = await fetch('http://localhost:5000/borderdata')
+            const json = await response.json()
+            setReadyData(json) 
+        }
+        fetchData()
+     }, []); 
+    
+    const loadBorderInfo = (information) => {
+        allMexicanBorders = []
+        allCanadianBorders = []
+        for (const item in information.allMexicanPorts) {
+            let currBorder = information.allMexicanPorts[item]
+            allMexicanBorders.push(
+                <div key={item} className='border' onClick={() => crossingClick(item)}>
+                    <div>{item}</div>
+                    <div>{currBorder.border[0]}</div>
+                    <div>{currBorder.borderRegion[0]}</div>
+                    <div>{currBorder.crossingName[0]}</div>
+                    <div>{currBorder.hours[0]}</div>
+                    <div>{currBorder.passengerVehicleWait[0]}</div>
+                    <div>{currBorder.pedestrianLaneWait[0]}</div>
+                    <div>{currBorder.portStatus[0]}</div>
+                </div>
+        )}
+        for (const item in information.allCanadianPorts) {
+            let currBorder = information.allCanadianPorts[item]
+            console.log(currBorder)
+            allCanadianBorders.push(
+                <div key={item} className='border' onClick={() => crossingClick(item)}>
+                    <div>{item}</div>
+                    <div>{currBorder.border[0]}</div>
+                    <div>{currBorder.borderRegion[0]}</div>
+                    <div>{currBorder.crossingName[0]}</div>
+                    <div>{currBorder.hours[0]}</div>
+                    <div>{currBorder.passengerVehicleWait[0]}</div>
+                    <div>{currBorder.pedestrianLaneWait[0]}</div>
+                    <div>{currBorder.portStatus[0]}</div>
+                </div>
+        )}
     }
-    // const allborders = document.getElementsByClassName('border');
+    
+    loadBorderInfo(readyData)
     const crossingClick = (item) => {
+        console.log(item)
         navigate(`/borderpage/${item}`)
-        return (
-            <></>
-        )
     }
-      
+
     return (
     <div className="container">
         <Header variable={variable}/>
-        <h1>Home: Border Crossing Display</h1>
-            <div className="everythinginside">
-            {readyData.map((item, index) => (
-                <div key={index} className='border' onClick={() => crossingClick(index)}>
-            <div>{index}</div>
-            <div>{item.title[0]}</div>
-            <div>{parseDescription(item.description[0]._)}</div>
-                </div>
-            ))}
-            </div>
-    </div>
+        <h1> Crossing Display</h1>
+        <div>Last Updated Date: {readyData.lastUpdatedDate}</div>
+        <div>Last Updated Time: {readyData.lastUpdatedTime}</div>
+        <div>Total Number of Ports: {readyData.numOfPorts}</div>
+        <div className="mexicanBorders"> 
+            Mexican Borders: {allMexicanBorders}
+        </div>
+        <div className="canadianBorders"> 
+            Canadian Borders: {allCanadianBorders}
+        </div>
+     </div>
     )
 }
 export default Home

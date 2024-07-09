@@ -7,8 +7,8 @@ function EmergencyContact() {
 
     return (
         <div>
-        <Header variable={variable}/>
-        <h1>Emergency Contacts</h1>
+            <Header variable={variable}/>
+            <h1>Emergency Contacts</h1>
         </div>
     )
 }

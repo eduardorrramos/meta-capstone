@@ -9,8 +9,12 @@
 .container {
     position: relative;
 }
-.everythinginside{
+.mexicanBorders{
     position:absolute;
     display: flex;
-
+}
+.canadianBorders{
+    margin-top: 300px;
+    position: absolute;
+    display: flex;
 }

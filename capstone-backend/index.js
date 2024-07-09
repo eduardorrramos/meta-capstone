@@ -51,59 +51,56 @@ let crossingData = [];
 let CanadianBorders = [];
 let MexicanBorders = [];
 const fetchCrossingData = async () => {
-  CanadianBorders = [];
-  MexicanBorders = [];
-  await fetch('https://bwt.cbp.gov/xml/bwt.xml')
-  .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(data => {
-      //look into settings, to prevent to be displayed as array of only one item
-      parser.parseString( data, (err, result) => {
-        if (err) {
-            console.error('error', err);
-            return;
-        }
-        crossingData = result;
-        console.log(crossingData)
-    })
-    })
-    .catch(error => {
-      console.error(`Error fetching data: `, error);
-    });
+
+  const response = await fetch('https://bwt.cbp.gov/xml/bwt.xml');
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.text()
+  // console.log(data)
+  //look into settings, to prevent to be displayed as array of only one item
+  parser.parseString( data, (err, result) => {
+    if (err) {
+        console.error('error', err);
+        return;
+    }
+    crossingData = result;
+    CanadianBorders = [];
+    MexicanBorders = [];
     for (const item in crossingData.border_wait_time.port) {
-      if (crossingData.border_wait_time.port[item].border == "Canadian Border") {
+      let thisBorder = crossingData.border_wait_time.port[item];
+      if (thisBorder.border == "Canadian Border") {
         CanadianBorders.push({ 
-          border : crossingData.border_wait_time.port[item].border,
-          borderRegion : crossingData.border_wait_time.port[item].port_name,
-          crossingName : crossingData.border_wait_time.port[item].crossing_name,
-          hours : crossingData.border_wait_time.port[item].hours,
-          portStatus : crossingData.border_wait_time.port[item].port_status,
-          passengerVehicleWait : crossingData.border_wait_time.port[item].passenger_vehicle_lanes[0].standard_lanes[0].delay_minutes,
-          passengerVehicleWait : crossingData.border_wait_time.port[item].pedestrian_lanes[0].standard_lanes[0].delay_minutes
+          border : thisBorder.border,
+          borderRegion : thisBorder.port_name,
+          crossingName : thisBorder.crossing_name,
+          hours : thisBorder.hours,
+          portStatus : thisBorder.port_status,
+          passengerVehicleWait : thisBorder.passenger_vehicle_lanes[0].standard_lanes[0].delay_minutes,
+          pedestrianLaneWait : thisBorder.pedestrian_lanes[0].standard_lanes[0].delay_minutes
       }) }
       else {
         MexicanBorders.push({ 
-          border : crossingData.border_wait_time.port[item].border,
-          borderRegion : crossingData.border_wait_time.port[item].port_name,
-          crossingName : crossingData.border_wait_time.port[item].crossing_name,
-          hours : crossingData.border_wait_time.port[item].hours,
-          portStatus : crossingData.border_wait_time.port[item].port_status,
-          passengerVehicleWait : crossingData.border_wait_time.port[item].passenger_vehicle_lanes[0].standard_lanes[0].delay_minutes,
-          pedestrianLaneWait : crossingData.border_wait_time.port[item].pedestrian_lanes[0].standard_lanes[0].delay_minutes
+          border : thisBorder.border,
+          borderRegion : thisBorder.port_name,
+          crossingName : thisBorder.crossing_name,
+          hours : thisBorder.hours,
+          portStatus : thisBorder.port_status,
+          passengerVehicleWait : thisBorder.passenger_vehicle_lanes[0].standard_lanes[0].delay_minutes,
+          pedestrianLaneWait : thisBorder.pedestrian_lanes[0].standard_lanes[0].delay_minutes
       })
       }
     }
-    crossingData = { 
-    lastUpdatedDate : crossingData.border_wait_time.last_updated_date,
-    lastUpdatedTime : crossingData.border_wait_time.last_updated_time,
-    numOfPorts : crossingData.border_wait_time.number_of_ports,
-    allMexicanPorts : MexicanBorders,
-    allCanadianPorts : CanadianBorders
-};
+    console.log(MexicanBorders.length)
+  });
+
+  crossingData = { 
+  lastUpdatedDate : crossingData.border_wait_time.last_updated_date,
+  lastUpdatedTime : crossingData.border_wait_time.last_updated_time,
+  numOfPorts : crossingData.border_wait_time.number_of_ports,
+  allMexicanPorts : MexicanBorders,
+  allCanadianPorts : CanadianBorders
+}
 }
 
 app.get('/borderdata', (req, res) => {

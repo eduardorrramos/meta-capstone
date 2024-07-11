@@ -4,17 +4,30 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   width: 250px;
-  display: inline-block;
+  background-color: lightskyblue; 
+  display: flexbox;
+  transition: background-color 0.3s ease-in-out;
 }
+.border:hover {
+    background-color: lightgoldenrodyellow;
+  }
 .container {
     position: relative;
 }
 .mexicanBorders{
-    position:absolute;
     display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
 }
 .canadianBorders{
     margin-top: 300px;
     position: absolute;
     display: flex;
+}
+.firstdiv {
+    margin-top: 100px;
+}
+.pageInformation {
+    text-align: left;
 }

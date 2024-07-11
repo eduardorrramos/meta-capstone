@@ -1,107 +1,111 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
-const express = require('express')
-require('dotenv').config()
+const { PrismaClient } = require("@prisma/client");
+const express = require("express");
+const xml2js = require("xml2js");
+const { fetchCrossingData } = require("./data-fetcher");
+require("dotenv").config();
 
-const app = express()
-const PORT = process.env.PORT || 3000
-import { fetchCrossingData } from './data-fetcher'
+const prisma = new PrismaClient();
+const app = express();
+app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
-implementingWebSocket()
+createWebSocketNotification();
 
-settingServerUp()
-settingRoutes()
-setHeaders()
+settingRoutes();
+setHeaders();
 
-createNewUser()
-fetchAllUsers()
+fetchBorderData();
+createUserComment();
+fetchAllComments();
 
-fetchingBorderCrossingData()
-createBorderComment()
-fetchBorderComments()
+createNewUser();
+fetchAllUsers();
 
-function implementingWebSocket() {
-  const WebSocket = require('ws')
-  const wss = new WebSocket.Server({ server: app })
-  wss.on('connection', (ws) => {
-    console.log('New client connected!')
-    ws.on('message', (message) => {
-      console.log(`Received message: ${message}`)
-    })
-    ws.send('Welcome to the server!')
-  })
+function fetchAllComments() {
+  app.get("/usersposts", async (req, res) => {
+    const comments = await prisma.comment.findMany();
+    res.json(comments);
+  });
 }
 
-function fetchingBorderCrossingData() {
-  app.get('/borderdata', (req, res) => {
-    fetchCrossingData()
-    res.json(crossingData)
-  })
-}
-
-function settingServerUp() {
-  app.use(express.json());
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`)
-  })
-}
-
-function fetchBorderComments() {
-  app.get('/usersposts', async (req, res) => {
-    const comments = await prisma.comment.findMany()
-    res.json(comments)
-  })
-}
-
-function createBorderComment() {
-  app.post('/usersposts', async (req, res) => {
-    const { id, userInput, userId, borderNum } = req.body
+function createUserComment() {
+  app.post("/usersposts", async (req, res) => {
+    const { id, userInput, userId, borderNum } = req.body;
     const newcomment = await prisma.comment.create({
       data: {
         id,
         userId,
         borderNum,
-        userInput
-      }
-    })
-    res.status(201).json(newcomment)
-  })
+        userInput,
+      },
+    });
+    res.status(201).json(newcomment);
+  });
+}
+
+function fetchBorderData() {
+  app.get("/borderdata", async (req, res) => {
+    crossingData = await fetchCrossingData();
+    res.json(crossingData);
+  });
+}
+
+function createWebSocketNotification() {
+  const WebSocket = require("ws");
+  const server = require("http").createServer(app);
+  server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+  const wss = new WebSocket.Server({ server: server });
+  wss.on("connection", (ws) => {
+    console.log("New client connected!");
+    ws.send("Welcome to the server!");
+    ws.on("message", (message) => {
+      console.log(`Received message: ${message}`);
+      wss.clients.forEach((client) => {
+        client.send("Emergency Alert from backend");
+      });
+    });
+  });
 }
 
 function fetchAllUsers() {
-  app.get('/users', async (req, res) => {
-    const users = await prisma.user.findMany()
-    res.json(users)
-  })
+  app.get("/users", async (req, res) => {
+    const users = await prisma.user.findMany();
+    res.json(users);
+  });
 }
 
 function createNewUser() {
-  app.post('/users', async (req, res) => {
-    const { email, name, googleId, imgUrl } = req.body
+  app.post("/users", async (req, res) => {
+    const { email, name, googleId, imgUrl } = req.body;
     const newuser = await prisma.user.create({
       data: {
         email,
         name,
         googleId,
-        imgUrl
-      }
-    })
-    res.status(201).json(newuser)
-  })
+        imgUrl,
+      },
+    });
+    res.status(201).json(newuser);
+  });
 }
 
 function setHeaders() {
   app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE') 
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Access-Control-Allow-Origin')
-    res.setHeader('Access-Control-Max-Age', '3600') 
-    next()
-  })
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, Access-Control-Allow-Origin"
+    );
+    res.setHeader("Access-Control-Max-Age", "3600");
+    next();
+  });
 }
 
 function settingRoutes() {
-  app.get('/', (req, res) => {
-    res.send('<h1>Migra</h1>')
-  })
+  app.get("/", (req, res) => {
+    res.send("<h1>Migra</h1>");
+  });
 }

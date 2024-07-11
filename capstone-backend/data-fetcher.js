@@ -16,6 +16,7 @@ const fetchCrossingData = async () => {
       return;
     }
     crossingData = result;
+
     CanadianBorders = [];
     MexicanBorders = [];
     for (const item in crossingData.border_wait_time.port) {
@@ -48,7 +49,6 @@ const fetchCrossingData = async () => {
         });
       }
     }
-    console.log(MexicanBorders.length);
   });
 
   return {

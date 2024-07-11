@@ -1,15 +1,15 @@
-import Header from "../components/header"
-import {useParams} from 'react-router-dom'
+import Header from "../components/header";
+import { useParams } from "react-router-dom";
 
 function EmergencyContact() {
-    const params = useParams();
-    const variable = params.fourthid
+  const params = useParams();
+  const variable = params.userid;
 
-    return (
-        <div>
-            <Header variable={variable}/>
-            <h1>Emergency Contacts</h1>
-        </div>
-    )
+  return (
+    <div>
+      <Header variable={variable} />
+      <h1>Emergency Contacts</h1>
+    </div>
+  );
 }
-export default EmergencyContact
+export default EmergencyContact;

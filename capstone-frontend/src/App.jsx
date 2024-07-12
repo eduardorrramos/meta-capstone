@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef , createContext, useContext, useState} from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -9,9 +9,11 @@ import EmergencyContact from "./pages/EmergencyContact";
 import FAQ from "./pages/FAQ";
 import UserProfile from "./pages/UserProfile";
 import BorderPage from "./pages/BorderPage";
+import ApplicationContext from "./applicationContext";
 
 function App() {
   const socket = useRef(null);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!socket.current) {
@@ -24,6 +26,7 @@ function App() {
           const str = event.data;
           const numbers = str.match(/\d+/g);
           console.log("Server response", numbers);
+          setIsOpen(true);
         }
         else {
           console.log("Server response", event.data);
@@ -38,11 +41,12 @@ function App() {
   }, []);
 
   return (
+    <ApplicationContext.Provider value={{modalIsOpen, setIsOpen, socket}}>
     <div>
       <BrowserRouter>
         <Routes>
           <Route index element={<LogIn />} />
-          <Route path="/home/:userid" element={<Home value={socket} />} />
+          <Route path="/home/:userid" element={<Home/>} />
           <Route path="/userprofile/:userid" element={<UserProfile />} />
           <Route
             path="/emergencycontact/:userid"
@@ -54,7 +58,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </ApplicationContext.Provider>
   );
 }
-
 export default App;

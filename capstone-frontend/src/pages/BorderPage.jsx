@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import "./BorderPage.css";
 import useSWR from "swr";
 const fetcher = (url) => fetch(url).then((res) => res.json());
+import ModalPopulate from "../components/modal";
 
 function BorderPage() {
   const borderObject = useParams();
@@ -30,24 +31,21 @@ function BorderPage() {
 
   useEffect(() => {
     if (allComments) {
-    createCommentDisplays(allComments);
+      createCommentDisplays(allComments);
     }
   }, [allComments]);
 
-  let allRelevantComments = []
-  let populatedDivs = []
+  let allRelevantComments = [];
+  let populatedDivs = [];
   function createCommentDisplays(specificBorderPosts) {
-    allRelevantComments = []
-    specificBorderPosts.forEach(element => {
-        if (parseInt(element.borderNum) == borderIndex){
-        allRelevantComments.push(
-           element.userInput)
-        }
-    }    );
-    populatedDivs = allRelevantComments.map(comment => (
-        <div>{comment}</div>
-    ))
-}
+    allRelevantComments = [];
+    specificBorderPosts.forEach((element) => {
+      if (parseInt(element.borderNum) == borderIndex) {
+        allRelevantComments.push(element.userInput);
+      }
+    });
+    populatedDivs = allRelevantComments.map((comment) => <div>{comment}</div>);
+  }
 
   if (crossingData) {
     const thisBorder = crossingData.allMexicanPorts[borderIndex];
@@ -74,10 +72,10 @@ function BorderPage() {
           <button>Post </button>
         </form>
         <div>
-            populatedDivs.map({})
-        {populatedDivs}
+          populatedDivs.map({}){populatedDivs}
         </div>
-        <div></div>
+        <ModalPopulate/>
+  
       </div>
     );
   } else {
@@ -85,7 +83,7 @@ function BorderPage() {
   }
 }
 export default BorderPage;
-
+// going to work on implementing this back Friday 07/11
 // function handle(input) {
 //     const newdata = { ...postData };
 //     newdata[input.target.id] = input.target.value;

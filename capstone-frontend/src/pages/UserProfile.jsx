@@ -2,6 +2,7 @@ import Header from "../components/header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Logout from "../components/logout";
+import ModalPopulate from "../components/modal";
 
 function UserProfile() {
   const [userData, setUserData] = useState([]);
@@ -46,6 +47,7 @@ function UserProfile() {
           <h2 id="email"> {userData[userIndex].email}</h2>
         </div>
         <Logout />
+        <ModalPopulate/>
       </div>
     );
   } else {

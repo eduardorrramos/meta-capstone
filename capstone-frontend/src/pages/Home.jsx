@@ -1,17 +1,19 @@
-import { useEffect, useState, useContex, useRef } from "react";
+import { useEffect, useState, useContext, useRef, createContext } from "react";
 import "./Home.css";
 import Header from "../components/header";
 import { useNavigate, useParams } from "react-router-dom";
+import Modal from "react-modal";
+import ApplicationContext from "../applicationContext";
 
-function Home({ value }) {
+function Home() {
+  const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
   const [readyData, setReadyData] = useState([]);
-  const navigate = useNavigate();
-  const params = useParams();
-  const variable = params.userid;
-
   let allMexicanBorders = [];
   let allCanadianBorders = [];
-  const ws = value.current;
+  const navigate = useNavigate();
+  const params = useParams();
+  const userId = params.userid;
+  const websocket = socket.current;
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
@@ -23,7 +25,7 @@ function Home({ value }) {
   }, [setReadyData]);
 
   const sendAlert = () => {
-    ws.send("emergency alert");
+    websocket.send(`Front-End Emergency Alert: User ${userId}`);
   };
 
   const loadBorderInfo = (information) => {
@@ -32,11 +34,7 @@ function Home({ value }) {
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
-        <div
-          key={item}
-          className="border"
-          onClick={() => crossingClick(currBorder)}
-        >
+        <div key={item} className="border" onClick={() => crossingClick(item)}>
           <div>{item}</div>
           <div>{currBorder.border[0]}</div>
           <div>{currBorder.borderRegion[0]}</div>
@@ -50,14 +48,13 @@ function Home({ value }) {
     }
   };
   loadBorderInfo(readyData);
-
-  const crossingClick = (item) => {
-    navigate(`/borderpage/${item}`);
+  const crossingClick = (currBorder) => {
+    navigate(`/borderpage/${currBorder}`);
   };
-  
+
   return (
     <div className="container">
-      <Header variable={variable} />
+      <Header variable={userId} />
       <div className="pageInformation">
         <div className="firstdiv">
           Last Updated Date: {readyData.lastUpdatedDate}
@@ -67,6 +64,7 @@ function Home({ value }) {
       </div>
       <button onClick={sendAlert}></button>
       <div className="mexicanBorders">{allMexicanBorders}</div>
+      <Modal/>
     </div>
   );
 }

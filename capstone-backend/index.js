@@ -45,8 +45,10 @@ function createUserComment() {
 
 function fetchBorderData() {
   app.get("/borderdata", async (req, res) => {
+    console.log("Server receives request ")
     crossingData = await fetchCrossingData();
     res.json(crossingData);
+    console.log("This fetch is being made by BorderPage")
   });
 }
 
@@ -62,8 +64,9 @@ function createWebSocketNotification() {
     ws.send("Welcome to the server!");
     ws.on("message", (message) => {
       console.log(`Received message: ${message}`);
+      let userId = message;
       wss.clients.forEach((client) => {
-        client.send("Emergency Alert from backend");
+        client.send(`Emergency Alert from Back-End: ${userId}`);
       });
     });
   });

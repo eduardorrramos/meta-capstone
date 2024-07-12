@@ -20,7 +20,15 @@ function App() {
         console.log("Server connected | WS");
       });
       socket.current.addEventListener("message", function (event) {
-        console.log("Server response", event.data);
+        if(/\d/.test(event.data)) {
+          const str = event.data;
+          const numbers = str.match(/\d+/g);
+          console.log("Server response", numbers);
+        }
+        else {
+          console.log("Server response", event.data);
+        }
+        
       });
       socket.current.onopen = (event) => {
         socket.current.send("here's some text");

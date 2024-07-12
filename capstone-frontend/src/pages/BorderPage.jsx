@@ -1,97 +1,83 @@
 import Header from "../components/header";
 import { useParams } from "react-router-dom";
-import { useState, useEffect, act } from "react";
+import { useState, useEffect } from "react";
 import "./BorderPage.css";
+import useSWR from "swr";
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 function BorderPage() {
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
-  let specificBorderPosts = [];
 
-  const [crossingData, setCrossingData] = useState([]);
   const [postData, setPostData] = useState({
-    userId: "",
-    borderNum: parseInt(borderIndex),
+    userId: "erramoseduardo@gmail.com",
+    borderNum: "0",
     userInput: "",
   });
 
+  const { data, error, isLoading } = useSWR(
+    "http://localhost:5000/borderdata",
+    fetcher
+  );
+  const {
+    data: data2,
+    error: error2,
+    isLoading: isLoading2,
+  } = useSWR("http://localhost:5000/usersposts", fetcher);
+
+  const crossingData = data;
+  const allComments = data2;
+
   useEffect(() => {
-    fetchComments();
-    fetch("http://localhost:5000/borderdata")
-      .then((response) => response.json())
-      .then((data) => {
-        setCrossingData(data);
-      });
-  }, []);
+    if (allComments) {
+    createCommentDisplays(allComments);
+    }
+  }, [allComments]);
 
-  function handle(e) {
-    const newdata = { ...postData };
-    newdata[e.target.id] = e.target.value;
-    setPostData(newdata);
-  }
-  function submit(e) {
-    e.preventDefault();
-    fetch("http://localhost:5000/usersposts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://localhost:5000/usersposts",
-      },
-      body: JSON.stringify(postData),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error(error));
-  }
-
-  function fetchComments() {
-    fetch("http://localhost:5000/usersposts")
-      .then((response) => response.json())
-      .then((data) => {
-        specificBorderPosts = [];
-        for (const item of data) {
-          if (data[item].borderNum == borderIndex) {
-            specificBorderPosts.push(data[item]);
-          }
+  let allRelevantComments = []
+  let populatedDivs = []
+  function createCommentDisplays(specificBorderPosts) {
+    allRelevantComments = []
+    specificBorderPosts.forEach(element => {
+        if (parseInt(element.borderNum) == borderIndex){
+        allRelevantComments.push(
+           element.userInput)
         }
-      });
-  }
+    }    );
+    populatedDivs = allRelevantComments.map(comment => (
+        <div>{comment}</div>
+    ))
+}
 
-  if (crossingData.length > 0) {
+  if (crossingData) {
+    const thisBorder = crossingData.allMexicanPorts[borderIndex];
     return (
       <div>
         <Header />
-        <div>yay border </div>
         <div className="border">
-          <div>{thisborder.border[0]}</div>
-          <div>{thisborder.borderRegion[0]}</div>
-          <div>{thisborder.crossingName[0]}</div>
-          <div>{thisborder.hours[0]}</div>
-          <div>{thisborder.passengerVehicleWait[0]}</div>
-          <div>{thisborder.pedestrianLaneWait[0]}</div>
-          <div>{thisborder.portStatus[0]}</div>
+          <div>{thisBorder.border}</div>
+          <div>{thisBorder.borderRegion[0]}</div>
+          <div>{thisBorder.crossingName[0]}</div>
+          <div>{thisBorder.hours[0]}</div>
+          <div>{thisBorder.passengerVehicleWait[0]}</div>
+          <div>{thisBorder.pedestrianLaneWait[0]}</div>
+          <div>{thisBorder.portStatus[0]}</div>
         </div>
-        <form onSubmit={(e) => submit(e)}>
+
+        <form onSubmit={(input) => submit(input)}>
           <input
-            onChange={(e) => handle(e)}
-            id="userId"
-            value={postData.userId}
-            placeholder="userId"
-          ></input>
-          <input
-            onChange={(e) => handle(e)}
+            onChange={(input) => handle(input)}
             id="userInput"
             value={postData.userInput}
             placeholder="userInput"
           ></input>
-          <button>Submit </button>
+          <button>Post </button>
         </form>
-        {specificBorderPosts.map((item, index) => (
-          <div key={index} className="border">
-            <div>{item.userInput}</div>
-            <div>{item.borderNum}</div>
-          </div>
-        ))}
+        <div>
+            populatedDivs.map({})
+        {populatedDivs}
+        </div>
+        <div></div>
       </div>
     );
   } else {
@@ -99,3 +85,23 @@ function BorderPage() {
   }
 }
 export default BorderPage;
+
+// function handle(input) {
+//     const newdata = { ...postData };
+//     newdata[input.target.id] = input.target.value;
+//     setPostData(newdata);
+//   }
+//   function submit(input) {
+//     input.preventDefault();
+//     fetch("http://localhost:5000/usersposts", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Access-Control-Allow-Origin": "http://localhost:5000/usersposts",
+//       },
+//       body: JSON.stringify(postData),
+//     })
+//       .then((response) => response.json())
+//       .then((data) => console.log(data))
+//       .catch((error) => console.error(error));
+//   }

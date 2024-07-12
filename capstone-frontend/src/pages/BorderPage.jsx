@@ -1,15 +1,19 @@
 import Header from "../components/header";
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./BorderPage.css";
 import useSWR from "swr";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 import ModalPopulate from "../components/modal";
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
+("use client");
+const apiKey = import .meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 function BorderPage() {
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
 
+  const position = { lat: 29.7, lng: 95.6 };
   const [postData, setPostData] = useState({
     userId: "erramoseduardo@gmail.com",
     borderNum: "0",
@@ -74,8 +78,12 @@ function BorderPage() {
         <div>
           populatedDivs.map({}){populatedDivs}
         </div>
-        <ModalPopulate/>
-  
+        <ModalPopulate />
+        <APIProvider apiKey={apiKey}>
+          <div style={{ height: "50vh", width: "50vh" }}>
+            <Map zoom={9} center={position}></Map>
+          </div>
+        </APIProvider>
       </div>
     );
   } else {

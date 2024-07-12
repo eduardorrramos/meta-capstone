@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@react-google-maps/api": "^2.19.3",
+    "@vis.gl/react-google-maps": "^1.1.0",
+    "google-maps-react": "^2.0.6",
     "react-google-login": "^5.2.2",
+    "react-google-maps": "^9.4.5",
     "react-modal": "^3.16.1",
     "react-navigation": "^5.0.0",
     "react-router-dom": "^6.24.1",

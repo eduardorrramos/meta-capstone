@@ -3,8 +3,9 @@ import './header.css'
 
 function Header(props) {
   const userGoogleId = props.variable;
+  
     return (
-    <header className="header" >
+    <header className="header">
       <div style={{ display: 'inline-block', float: 'left' }}>
       <h2 style={{ display: 'inline-block', marginLeft: '30px' }}> Migra </h2>
       <img src="my-logo.png" alt="My Logo" style={{ display: 'inline-block', marginLeft: '10px' }}/>

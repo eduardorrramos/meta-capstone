@@ -6,6 +6,7 @@
   background-color: rgb(0, 0, 89);
   color: #3939d4;
   display: inline-block;
+  /* height: 50px; */
 }
 .navBar {
   display: flex;

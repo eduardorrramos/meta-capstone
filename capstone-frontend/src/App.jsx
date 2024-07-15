@@ -10,6 +10,7 @@ import FAQ from "./pages/FAQ";
 import UserProfile from "./pages/UserProfile";
 import BorderPage from "./pages/BorderPage";
 import ApplicationContext from "./applicationContext";
+import {ChakraProvider} from '@chakra-ui/react'
 
 function App() {
   const socket = useRef(null);
@@ -41,6 +42,7 @@ function App() {
   }, []);
 
   return (
+    // <ChakraProvider>
     <ApplicationContext.Provider value={{modalIsOpen, setIsOpen, socket}}>
     <div>
       <BrowserRouter>
@@ -59,6 +61,7 @@ function App() {
       </BrowserRouter>
     </div>
     </ApplicationContext.Provider>
+    // </ChakraProvider>
   );
 }
 export default App;

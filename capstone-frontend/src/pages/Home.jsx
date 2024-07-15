@@ -4,6 +4,7 @@ import Header from "../components/header";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "react-modal";
 import ApplicationContext from "../applicationContext";
+import ModalPopulate from "../components/modal";
 
 function Home() {
   const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
@@ -24,9 +25,6 @@ function Home() {
       .catch((err) => console.log(err));
   }, [setReadyData]);
 
-  const sendAlert = () => {
-    websocket.send(`Front-End Emergency Alert: User ${userId}`);
-  };
 
   const loadBorderInfo = (information) => {
     allMexicanBorders = [];
@@ -34,20 +32,19 @@ function Home() {
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
-        <div key={item} className="border" onClick={() => crossingClick(item)}>
-          <div>{item}</div>
-          <div>{currBorder.border[0]}</div>
-          <div>{currBorder.borderRegion[0]}</div>
+        <div className="border" key={item} onClick={() => crossingClick(item)}>
+            <div>
+            <img style={{ width: '250px', height: '330px' }} src="https://images.pexels.com/photos/1322077/pexels-photo-1322077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Image" />
+        <div>{currBorder.borderRegion[0]}</div>
           <div>{currBorder.crossingName[0]}</div>
-          <div>{currBorder.hours[0]}</div>
-          <div>{currBorder.passengerVehicleWait[0]}</div>
-          <div>{currBorder.pedestrianLaneWait[0]}</div>
           <div>{currBorder.portStatus[0]}</div>
+          </div>
         </div>
       );
     }
   };
   loadBorderInfo(readyData);
+
   const crossingClick = (currBorder) => {
     navigate(`/borderpage/${currBorder}`);
   };
@@ -55,16 +52,12 @@ function Home() {
   return (
     <div className="container">
       <Header variable={userId} />
-      <div className="pageInformation">
-        <div className="firstdiv">
-          Last Updated Date: {readyData.lastUpdatedDate}
-        </div>
-        <div>Last Updated Time: {readyData.lastUpdatedTime}</div>
-        Mexican Borders:
-      </div>
-      <button onClick={sendAlert}></button>
       <div className="mexicanBorders">{allMexicanBorders}</div>
-      <Modal/>
+      <div className="pageInformation">
+        <div>Last Updated Date: {readyData.lastUpdatedDate}</div>
+        <div>Last Updated Time: {readyData.lastUpdatedTime}</div>
+      </div>
+      <ModalPopulate />
     </div>
   );
 }

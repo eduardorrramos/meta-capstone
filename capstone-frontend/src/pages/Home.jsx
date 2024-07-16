@@ -32,8 +32,8 @@ function Home() {
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
-        <div className="border" key={item} onClick={() => crossingClick(item)}>
-            <div>
+        <div className="border" key={item} onClick={() => crossingClick(item, userId)}>
+            <div className="words">
             <img style={{ width: '250px', height: '330px' }} src="https://images.pexels.com/photos/1322077/pexels-photo-1322077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Image" />
         <div>{currBorder.borderRegion[0]}</div>
           <div>{currBorder.crossingName[0]}</div>
@@ -45,8 +45,8 @@ function Home() {
   };
   loadBorderInfo(readyData);
 
-  const crossingClick = (currBorder) => {
-    navigate(`/borderpage/${currBorder}`);
+  const crossingClick = (currBorder, userId) => {
+    navigate(`/borderpage/${currBorder}/${userId}`);
   };
 
   return (

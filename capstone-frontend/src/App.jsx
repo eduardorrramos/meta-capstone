@@ -54,7 +54,7 @@ function App() {
             path="/emergencycontact/:userid"
             element={<EmergencyContact />}
           />
-          <Route path="/borderpage/:borderid" element={<BorderPage />} />
+          <Route path="/borderpage/:borderid/:userid" element={<BorderPage />} />
           <Route path="/faq/:userid" element={<FAQ />} />
           <Route path="*" element={<NoPage />} />
         </Routes>

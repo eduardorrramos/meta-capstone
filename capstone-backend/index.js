@@ -22,11 +22,7 @@ const bucketRegion=process.env.BUCKET_REGION
 const accessKey=process.env.ACCESS_KEY
 const secretAccessKey=process.env.ACCESS_KEY
 
-const AWS = require('aws-sdk')
-const fs = require('fs')
-const awsConfig = require('./aws-config.json')
-AWS.config.update(awsConfig);
-const s3 = new AWS.S3Client();
+upload.single('avatar')
 
 // const s4 = new S3Client({
 //   credentials: {
@@ -49,40 +45,23 @@ createNewUser();
 fetchAllUsers();
 
 app.get("/userprofile/uploads", async (req,res) => {
-  const posts = await prisma.posts.findMany({orderBy: [{created: 'desc"'}]})
+  const posts = await prisma.uploads.findMany({orderBy: [{created: 'desc'}]})
   res.send(posts)
 })
-app.post("/userprofile/uploads", upload.single('image'), async (req, res) => {
-  console.log(req.body)
-  console.log(req.file)
-  const uploadFile = (fileName) => {
-    const fileContent = fs.readFileSync(fileName);
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-      Body: fileContent,
-      ContentType: req.file.mimetype,
-    }
-  }
-  s3.upload(params, (err, data) => {
-    if (err) {
-      console.error('error', err);
-    }
-    else {
-      console.log('sucess', data.Location);
-    }
-  })
-  
-  // const command = new PutObjectCommand(params)
-  // await s3.send(command)
-  // res.send({})
-})
+postingMedia();
 
 app.delete("/userprofile/uploads/:id", async (req, res) => {
   const id = req.params.id
   res.send({})
 })
 
+
+function postingMedia() {
+  app.post("/userprofile", async (req, res) => {
+    console.log("req body", req);
+    res.json({});
+  });
+}
 
 function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {

@@ -2,33 +2,54 @@ import { useEffect, useState } from "react";
 import Logout from "../components/logout";
 import ModalPopulate from "../components/modal";
 import React from "react";
-import axios from 'axios';
+import axios from "axios";
 
-import { ListItemText, CardMedia, ListItem, List, Divider, Typography, ListItemAvatar, Avatar, Grid, Card, CardContent, CardActionArea } from "@mui/material";
+import {
+  ListItemText,
+  CardMedia,
+  ListItem,
+  List,
+  Divider,
+  Typography,
+  ListItemAvatar,
+  Avatar,
+  Grid,
+  Card,
+  CardContent,
+  CardActionArea,
+} from "@mui/material";
 
 import AccountMenu from "../components/newHeader";
 
 function UserProfile() {
   const [userData, setUserData] = useState([]);
   const [comments, setComments] = useState([]);
-  const userid = sessionStorage.getItem('email')
-  const [file, setFile] = useState()
-  const [caption, setCaption] = useState("")
+  const userid = sessionStorage.getItem("email");
+  const [file, setFile] = useState();
+  const [caption, setCaption] = useState("");
 
-  const submit = async event => {
+  const submit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.set("image", file);
+    formData.set("caption", caption);
+    // console.log(formData.get("caption")); // Output: "Hello World"
+    // console.log(caption)
+    const response = await fetch("http://localhost:5000/userprofile", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    const data = await response.json();
+    // console.log(data);
+  };
 
-  event.preventDefault()
-  const formData = new FormData();
-  formData.append("image", file)
-  formData.append("caption", caption)
-  console.log(formData)
-  await axios.post("/userprofile/uploads", formData, { headers: {'Content-Type': 'multipart/form-data'}})
-}
-
-  const fileSelected = event => {
-    const file = event.target.files[0]
-		setFile(file)
-	}
+  const fileSelected = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
 
   const fetchUserData = async () => {
     await fetch("http://localhost:5000/users")
@@ -73,7 +94,7 @@ function UserProfile() {
   if (userData.length > 0) {
     return (
       <div>
-        <AccountMenu variable={userid}/>
+        <AccountMenu variable={userid} />
         <Grid container spacing={2}>
           <Grid xs={6} sx={{ padding: "50px" }}>
             <Card sx={{ maxWidth: 400 }}>
@@ -118,7 +139,8 @@ function UserProfile() {
                           variant="body2"
                           color="text.primary"
                         ></Typography>
-                        {userData[userIndex].name} - {`${item.userInput}`} -  {item.postTime}, {item.postDate}
+                        {userData[userIndex].name} - {`${item.userInput}`} -{" "}
+                        {item.postTime}, {item.postDate}
                       </React.Fragment>
                     }
                   />
@@ -129,12 +151,25 @@ function UserProfile() {
           </Grid>
 
           <Grid xs={12}>
-          <form onSubmit={submit} style={{width:650}} className="flex flex-col space-y-5 px-5 py-14">
-          <input onChange={fileSelected} type="file" accept="image/*"></input>
-          <input value={caption} onChange={e => setCaption(e.target.value)} type="text" placeholder='Caption'></input>
-          <button type="submit">Submit</button>
-        </form>
-</Grid>
+            <form
+              onSubmit={submit}
+              style={{ width: 650 }}
+              className="flex flex-col space-y-5 px-5 py-14"
+            >
+              <input
+                onChange={fileSelected}
+                type="file"
+                accept="image/*"
+              ></input>
+              <input
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                type="text"
+                placeholder="Caption"
+              ></input>
+              <button type="submit">Submit</button>
+            </form>
+          </Grid>
           <Grid xs={12}>
             <Logout />
           </Grid>

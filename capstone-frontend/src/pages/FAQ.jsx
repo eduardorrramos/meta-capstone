@@ -1,11 +1,10 @@
 import "./FAQ.css";
-import { useParams } from "react-router-dom";
 import ModalPopulate from "../components/modal";
 import AccountMenu from "../components/newHeader";
 
 function FAQ() {
-  const params = useParams();
-  const variable = params.userid;
+  const variable = sessionStorage.getItem('email')
+
   return (
     <div>
       <AccountMenu variable={variable} />

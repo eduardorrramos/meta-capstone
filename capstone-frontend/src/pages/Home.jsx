@@ -1,27 +1,16 @@
 import { useEffect, useState, useContext, useRef, createContext } from "react";
 import "./Home.css";
-import { useNavigate, useParams } from "react-router-dom";
-import Modal from "react-modal";
-import ApplicationContext from "../applicationContext";
+import { useNavigate } from "react-router-dom";
 import ModalPopulate from "../components/modal";
 
-import Grid from "@mui/material/Grid"; // Grid version 1
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Typography, CardActionArea, CardMedia, CardContent, Card, Grid } from "@mui/material";
 import AccountMenu from "../components/newHeader";
 
 function Home() {
-  const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
   const [readyData, setReadyData] = useState([]);
   let allMexicanBorders = [];
-  let allCanadianBorders = [];
   const navigate = useNavigate();
-  const params = useParams();
-  const userId = params.userid;
-  const websocket = socket.current;
+  const userId = sessionStorage.getItem('email')
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
@@ -34,7 +23,6 @@ function Home() {
 
   const loadBorderInfo = (information) => {
     allMexicanBorders = [];
-    allCanadianBorders = [];
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
@@ -83,7 +71,7 @@ function Home() {
   loadBorderInfo(readyData);
 
   const crossingClick = (currBorder, userId) => {
-    navigate(`/borderpage/${currBorder}/${userId}`);
+    navigate(`/borderpage/${currBorder}`);
   };
   if (allMexicanBorders.length > 0) {
     return (
@@ -98,7 +86,7 @@ function Home() {
             container
             spacing={2}
             wrap="wrap"
-            md={12}
+            xs={12}
             sx={{ padding: "0px" }}
           >
             {allMexicanBorders}

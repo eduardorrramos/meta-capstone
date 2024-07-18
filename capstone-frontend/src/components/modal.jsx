@@ -11,7 +11,9 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
 };
-
+navigator.geolocation.getCurrentPosition((position) => {
+    console.log()
+})
 function ModalPopulate() {
   const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
   const websocket = socket.current;

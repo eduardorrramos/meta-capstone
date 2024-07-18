@@ -14,7 +14,6 @@ import {
 export default function AccountMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const userGoogleId = props.variable;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,7 +27,7 @@ export default function AccountMenu(props) {
         <Typography sx={{ minWidth: 100 }}>
           {" "}
           <a
-            href={`http://localhost:5173/home/${userGoogleId}`}
+            href={`http://localhost:5173/home`}
             style={{ transform: "translateY(100%)" }}
           >
             Home
@@ -37,7 +36,7 @@ export default function AccountMenu(props) {
         <Typography sx={{ minWidth: 100 }}>
           {" "}
           <a
-            href={`http://localhost:5173/userprofile/${userGoogleId}`}
+            href={`http://localhost:5173/userprofile`}
             style={{ transform: "translateY(100%)" }}
           >
             User Profile
@@ -46,7 +45,7 @@ export default function AccountMenu(props) {
         <Typography sx={{ minWidth: 100 }}>
           {" "}
           <a
-            href={`http://localhost:5173/emergencycontact/${userGoogleId}`}
+            href={`http://localhost:5173/emergencycontact`}
             style={{ transform: "translateY(100%)" }}
           >
             Emergency Contact
@@ -55,7 +54,7 @@ export default function AccountMenu(props) {
         <Typography sx={{ minWidth: 100 }}>
           {" "}
           <a
-            href={`http://localhost:5173/faq/${userGoogleId}`}
+            href={`http://localhost:5173/faq`}
             style={{ transform: "translateY(100%)" }}
           >
             FAQ

@@ -1,28 +1,34 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import Logout from "../components/logout";
 import ModalPopulate from "../components/modal";
-import { Typography } from "@mui/material";
 import React from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import { ListItemText } from "@mui/material";
-import { Divider } from "@mui/material";
-import { ListItemAvatar } from "@mui/material";
-import { Avatar } from "@mui/material";
-import Grid from "@mui/material/Grid"; // Grid version 1
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
+import axios from 'axios';
+
+import { ListItemText, CardMedia, ListItem, List, Divider, Typography, ListItemAvatar, Avatar, Grid, Card, CardContent, CardActionArea } from "@mui/material";
+
 import AccountMenu from "../components/newHeader";
 
 function UserProfile() {
   const [userData, setUserData] = useState([]);
   const [comments, setComments] = useState([]);
+  const userid = sessionStorage.getItem('email')
+  const [file, setFile] = useState()
+  const [caption, setCaption] = useState("")
 
-  const params = useParams();
-  const userid = params.userid;
+  const submit = async event => {
+
+  event.preventDefault()
+  const formData = new FormData();
+  formData.append("image", file)
+  formData.append("caption", caption)
+  console.log(formData)
+  await axios.post("/userprofile/uploads", formData, { headers: {'Content-Type': 'multipart/form-data'}})
+}
+
+  const fileSelected = event => {
+    const file = event.target.files[0]
+		setFile(file)
+	}
 
   const fetchUserData = async () => {
     await fetch("http://localhost:5000/users")
@@ -112,7 +118,7 @@ function UserProfile() {
                           variant="body2"
                           color="text.primary"
                         ></Typography>
-                        {userData[userIndex].name} - {`${item.userInput}`}
+                        {userData[userIndex].name} - {`${item.userInput}`} -  {item.postTime}, {item.postDate}
                       </React.Fragment>
                     }
                   />
@@ -122,6 +128,13 @@ function UserProfile() {
             </List>
           </Grid>
 
+          <Grid xs={12}>
+          <form onSubmit={submit} style={{width:650}} className="flex flex-col space-y-5 px-5 py-14">
+          <input onChange={fileSelected} type="file" accept="image/*"></input>
+          <input value={caption} onChange={e => setCaption(e.target.value)} type="text" placeholder='Caption'></input>
+          <button type="submit">Submit</button>
+        </form>
+</Grid>
           <Grid xs={12}>
             <Logout />
           </Grid>

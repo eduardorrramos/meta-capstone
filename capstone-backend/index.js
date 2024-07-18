@@ -3,11 +3,38 @@ const express = require("express");
 const xml2js = require("xml2js");
 const { fetchCrossingData } = require("./data-fetcher");
 require("dotenv").config();
+const multer = require( 'multer' );
+const  {S3Client} = require( '@aws-sdk/client-s3');
+const dotenv = require( 'dotenv' );
+const {PutObjectCommand} = require( '@aws-sdk/client-s3');
 
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
+dotenv.config()
+
+const storage  = multer.memoryStorage()
+const upload = multer({storage: storage})
+
+const bucketName=process.env.BUCKET_NAME
+const bucketRegion=process.env.BUCKET_REGION
+const accessKey=process.env.ACCESS_KEY
+const secretAccessKey=process.env.ACCESS_KEY
+
+const AWS = require('aws-sdk')
+const fs = require('fs')
+const awsConfig = require('./aws-config.json')
+AWS.config.update(awsConfig);
+const s3 = new AWS.S3Client();
+
+// const s4 = new S3Client({
+//   credentials: {
+//     secretAccessKey: secretAccessKey,
+//     accessKeyId: accessKey
+//   },
+//   region: bucketRegion
+// })
 
 createWebSocketNotification();
 
@@ -21,22 +48,60 @@ fetchAllComments();
 createNewUser();
 fetchAllUsers();
 
+app.get("/userprofile/uploads", async (req,res) => {
+  const posts = await prisma.posts.findMany({orderBy: [{created: 'desc"'}]})
+  res.send(posts)
+})
+app.post("/userprofile/uploads", upload.single('image'), async (req, res) => {
+  console.log(req.body)
+  console.log(req.file)
+  const uploadFile = (fileName) => {
+    const fileContent = fs.readFileSync(fileName);
+    const params = {
+      Bucket: bucketName,
+      Key: fileName,
+      Body: fileContent,
+      ContentType: req.file.mimetype,
+    }
+  }
+  s3.upload(params, (err, data) => {
+    if (err) {
+      console.error('error', err);
+    }
+    else {
+      console.log('sucess', data.Location);
+    }
+  })
+  
+  // const command = new PutObjectCommand(params)
+  // await s3.send(command)
+  // res.send({})
+})
+
+app.delete("/userprofile/uploads/:id", async (req, res) => {
+  const id = req.params.id
+  res.send({})
+})
+
+
 function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {
-    const comments = await prisma.comment.findMany();
+    const comments = await prisma.comments.findMany();
     res.json(comments);
   });
 }
 
 function createUserComment() {
   app.post("/usersposts", async (req, res) => {
-    const { id, userInput, userId, borderNum } = req.body;
-    const newcomment = await prisma.comment.create({
+    const { id, userInput, userId, borderNum, postDate, postTime } = req.body;
+    const newcomment = await prisma.comments.create({
       data: {
         id,
         userId,
         borderNum,
         userInput,
+        postDate,
+        postTime
       },
     });
     res.status(201).json(newcomment);

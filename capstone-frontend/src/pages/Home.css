@@ -1,15 +1,22 @@
 .border {
   margin: 20px;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #111111;
   border-radius: 10px;
   width: 250px;
-  background-color: lightskyblue; 
+  background-color: #222222; 
   display: flexbox;
   transition: background-color 0.3s ease-in-out;
 }
 .border:hover {
-    background-color: lightgoldenrodyellow;
+    background-color: snow;
+  }
+  .words {
+    color: rgb(255, 251, 247);
+    transition: color 0.3s ease;
+}
+.border:hover .words {
+    color: #000; 
   }
 .container {
     position: relative;

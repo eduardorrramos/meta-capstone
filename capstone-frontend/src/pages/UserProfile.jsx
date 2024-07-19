@@ -6,6 +6,8 @@ import ModalPopulate from "../components/modal";
 
 function UserProfile() {
   const [userData, setUserData] = useState([]);
+  const [comments, setComments] = useState([]);
+
   const params = useParams();
   const userid = params.userid;
 
@@ -26,13 +28,27 @@ function UserProfile() {
   };
   let userIndex = 0;
   for (const item in userData) {
-    if (userData[item].googleId == userid) {
+    if (userData[item].email == userid) {
       userIndex = item;
     }
   }
 
   useEffect(() => {
     fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/usersposts")
+      .then((response) => response.json())
+      .then((data) => {
+        let relevantComments = [];
+        for (const item in data) {
+          if (data[item].userId == userid) {
+            relevantComments.push(data[item]);
+          }
+        }
+        setComments(relevantComments);
+      });
   }, []);
 
   if (userData.length > 0) {
@@ -46,8 +62,14 @@ function UserProfile() {
           <h2 id="googleid"> {userData[userIndex].googleId}</h2>
           <h2 id="email"> {userData[userIndex].email}</h2>
         </div>
+        {comments.map((item, index) => (
+          <div key={index} className="border">
+            <div>Border Crossing Index: {item.borderNum}</div>
+            <div>{item.userInput}</div>
+          </div>
+        ))}
         <Logout />
-        <ModalPopulate/>
+        <ModalPopulate />
       </div>
     );
   } else {

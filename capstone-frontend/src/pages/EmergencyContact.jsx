@@ -5,6 +5,7 @@ import ModalPopulate from "../components/modal";
 function EmergencyContact() {
   const params = useParams();
   const variable = params.userid;
+  console.log(params)
   const sendAlert = () => {
     websocket.send(`Front-End Emergency Alert: User ${userId}`);
   };

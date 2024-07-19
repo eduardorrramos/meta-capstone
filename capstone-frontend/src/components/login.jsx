@@ -39,10 +39,10 @@ function Login() {
         .catch(error => console.error(error));
       }
       else {
-        navigate(`/home/${res.profileObj.googleId}`);
+        navigate(`/home/${res.profileObj.email}`);
       }
     })
-      navigate(`/home/${res.profileObj.googleId}`);
+      navigate(`/home/${res.profileObj.email}`);
   }
 
   const onFailure = (res) => {

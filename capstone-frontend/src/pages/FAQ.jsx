@@ -1,10 +1,11 @@
 import "./FAQ.css";
 import ModalPopulate from "../components/modal";
 import AccountMenu from "../components/newHeader";
+import ApplicationContext from "../applicationContext";
 
 function FAQ() {
-  const variable = sessionStorage.getItem('email')
-
+  const { userEmail } = useContext(ApplicationContext);
+  const variable = userEmail
   return (
     <div>
       <AccountMenu variable={variable} />

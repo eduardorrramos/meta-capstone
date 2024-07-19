@@ -1,9 +1,11 @@
-import "./BorderPage.css";
 import { useParams } from "react-router-dom";
-import { useState, useEffect, React } from "react";
-import AccountMenu from "../components/newHeader";
+import { useState, useEffect } from "react";
+import "./BorderPage.css";
 import ModalPopulate from "../components/modal";
+import React from "react";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import fetchSpecificBorderComments from "./specificBorderComments";
+
 ("use client");
 import {
   Card,
@@ -21,19 +23,19 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
-
+import AccountMenu from "../components/newHeader";
 
 function BorderPage() {
-  const borderObject = useParams();
-  const borderIndex = borderObject.borderid;
-  const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
   const [coordinates, setCoordinates] = useState(null);
   const [comments, setComments] = useState([]);
   const [resetPosts, setResetPost] = useState(null);
   const [crossingData, setCrossingData] = useState(null);
+  const borderObject = useParams();
+  const borderIndex = borderObject.borderid;
+  const apiKey ="AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
   const email = localStorage.getItem("email");
   const date = new Date();
-
   let currentTime = date.toLocaleTimeString();
   let currentDate = date.toLocaleDateString();
 
@@ -89,19 +91,13 @@ function BorderPage() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:5000/usersposts")
-      .then((response) => response.json())
-      .then((data) => {
-        let relevantComments = [];
-        for (const item in data) {
-          if (data[item].borderNum == borderIndex) {
-            relevantComments.push(data[item]);
-          }
+        async function fetchComments() {
+          const relevantComments = await fetchSpecificBorderComments(borderIndex);
+          setComments(relevantComments);
         }
-        setComments(relevantComments);
-        console.log(relevantComments, "relevant comments");
-      });
+        fetchComments();
   }, [setComments]);
+  console.log(comments)
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
@@ -230,17 +226,3 @@ function BorderPage() {
   }
 }
 export default BorderPage;
-
-/*
-  const [imageUrl, setImageUrl] = useState(null);
-  const fetchIndividualImage = async (location) => {
-    const response = await fetch(
-      `https://images-api.nasa.gov/search?q=${location}&media_type=image`
-    );
-    const data = await response.json();
-    const newImage = await data.collection.items[0].links[0].href;
-    setImageUrl(newImage);
-  };
-  fetchIndividualImage(thisBorder.borderRegion[0]);
-  <img src={imageUrl}></img>
-  */

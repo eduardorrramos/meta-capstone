@@ -6,8 +6,7 @@ function Logout() {
     const navigate = useNavigate()
     
     const onSuccess = () => {
-        sessionStorage.removeItem('name')
-        sessionStorage.removeItem('email')
+        sessionStorage.clear()
         console.log("Log out successful");
         navigate('/');
     };

@@ -14,6 +14,10 @@ import ApplicationContext from "./applicationContext";
 function App() {
   const socket = useRef(null);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const userName = sessionStorage.getItem("name");
+  const userEmail = sessionStorage.getItem("email");
+  const userImg = sessionStorage.getItem("image");
+  const userId = sessionStorage.getItem("googleid");
 
   useEffect(() => {
     if (!socket.current) {
@@ -39,7 +43,7 @@ function App() {
   }, []);
 
   return (
-    <ApplicationContext.Provider value={{ modalIsOpen, setIsOpen, socket }}>
+    <ApplicationContext.Provider value={{ modalIsOpen, setIsOpen, socket, userName, userEmail, userImg, userId }}>
       <div>
         <BrowserRouter>
           <Routes>

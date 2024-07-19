@@ -58,8 +58,8 @@ app.delete("/userprofile/uploads/:id", async (req, res) => {
 
 function postingMedia() {
   app.post("/userprofile", async (req, res) => {
-    console.log("req body", req);
-    res.json({});
+    console.log("req body", req.body);
+    res.send({});
   });
 }
 

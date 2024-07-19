@@ -1,63 +1,78 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
 import "./BorderPage.css";
-// import useSWR from "swr";
-// const fetcher = (url) => fetch(url).then((res) => res.json());
+import { useParams } from "react-router-dom";
+import { useState, useEffect, React } from "react";
+import AccountMenu from "../components/newHeader";
 import ModalPopulate from "../components/modal";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 ("use client");
-const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-import {Card,CardActionArea,CardMedia,CardContent,Typography,Grid,} from "@mui/material";
-import {ListItemAvatar, ListItem, List, Divider, Avatar, ListItemText,} from "@mui/material";
-import React from "react";
-import AccountMenu from "../components/newHeader";
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Grid,
+} from "@mui/material";
+import {
+  ListItemAvatar,
+  ListItem,
+  List,
+  Divider,
+  Avatar,
+  ListItemText,
+} from "@mui/material";
+
 
 function BorderPage() {
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
-
+  const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const [coordinates, setCoordinates] = useState(null);
   const [comments, setComments] = useState([]);
   const [resetPosts, setResetPost] = useState(null);
   const [crossingData, setCrossingData] = useState(null);
   const email = localStorage.getItem("email");
-  const date = new Date()
+  const date = new Date();
 
-  let currentTime = date.toLocaleTimeString()
-  let currentDate = date.toLocaleDateString()
+  let currentTime = date.toLocaleTimeString();
+  let currentDate = date.toLocaleDateString();
 
   const [postData, setPostData] = useState({
     userId: email,
     borderNum: borderIndex,
     userInput: "",
     postDate: currentDate,
-    postTime: currentTime
+    postTime: currentTime,
   });
-
 
   function handle(input) {
     const newdata = { ...postData };
     newdata[input.target.id] = input.target.value;
     setPostData(newdata);
   }
-  // add a marker to the specific location
 
   function submit(input) {
     input.preventDefault();
-    currentTime = date.toLocaleTimeString()
-    currentDate = date.toLocaleDateString()
+    currentTime = date.toLocaleTimeString();
+    currentDate = date.toLocaleDateString();
     let oldComments = comments;
     const newInput = {
       userId: email,
       borderNum: borderIndex,
       userInput: input.target[0].value,
       postDate: currentDate,
-      postTime: currentTime
+      postTime: currentTime,
     };
     oldComments.push(newInput);
     setComments(oldComments);
-    setPostData({ userId: email, borderNum: borderIndex, userInput: "", postDate: newInput.postDate, postTime: newInput.postTime });
-    
+    setPostData({
+      userId: email,
+      borderNum: borderIndex,
+      userInput: "",
+      postDate: newInput.postDate,
+      postTime: newInput.postTime,
+    });
+
     fetch("http://localhost:5000/usersposts", {
       method: "POST",
       headers: {
@@ -72,49 +87,6 @@ function BorderPage() {
       })
       .catch((error) => console.error(error));
   }
-
-  // function submit(input) {
-  //   input.preventDefault();
-  //   let oldComments = comments;
-  //   const newComments = oldComments.push(input);
-  //   setComments(newComments);
-  //   fetch("http://localhost:5000/usersposts", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Access-Control-Allow-Origin": "http://localhost:5000/usersposts",
-  //     },
-  //     body: JSON.stringify(postData),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //       setResetPost(data);
-  //     })
-  //     .catch((error) => console.error(error));
-  // }
-
-  // useEffect(() => {}, [resetPosts]);
-
-  // const { data, error, isLoading } = useSWR(
-  //   "http://localhost:5000/borderdata",
-  //   fetcher
-  // );
-  // const crossingData = data;
-  //fetch gets in useEffect
-
-  // const fetchCoordinates = (address) => {
-  //   const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
-  //   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-  //     address
-  //   )}&key=${apiKey}`;
-  //   fetch(url)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       const newCoords = data.results[0].geometry.location;
-  //       setCoordinates(newCoords);
-  //     });
-  // };
 
   useEffect(() => {
     fetch("http://localhost:5000/usersposts")
@@ -137,10 +109,6 @@ function BorderPage() {
       .then((data) => {
         setCrossingData(data);
         const thisBorder = data.allMexicanPorts[borderIndex];
-        console.log(thisBorder.borderRegion[0]);
-        console.log(thisBorder.crossingName[0]);
-        // if not returning coordinates, do not display card on my home screen
-        const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           thisBorder.borderRegion[0] +
             thisBorder.borderCrossing +
@@ -198,7 +166,7 @@ function BorderPage() {
             </Card>
           </Grid>
           <Grid xs={6} sx={{ padding: "50px" }}>
-            <APIProvider apiKey="AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE">
+            <APIProvider apiKey={apiKey}>
               <div style={{ height: "50vh", width: "50vh" }}>
                 <Map zoom={10} center={coordinates}></Map>
               </div>

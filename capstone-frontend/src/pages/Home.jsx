@@ -3,14 +3,21 @@ import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import ModalPopulate from "../components/modal";
 
-import { Typography, CardActionArea, CardMedia, CardContent, Card, Grid } from "@mui/material";
+import {
+  Typography,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Card,
+  Grid,
+} from "@mui/material";
 import AccountMenu from "../components/newHeader";
 
 function Home() {
   const [readyData, setReadyData] = useState([]);
   let allMexicanBorders = [];
   const navigate = useNavigate();
-  const userId = sessionStorage.getItem('email')
+  const userId = sessionStorage.getItem("email");
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")

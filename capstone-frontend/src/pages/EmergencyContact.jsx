@@ -15,7 +15,6 @@ function EmergencyContact() {
   };
 
   return (
-    //header passed variable propm, look into this opposed to context and
     <Grid container spacing={2}>
       <AccountMenu variable={variable} />
       <Grid xs={12}>

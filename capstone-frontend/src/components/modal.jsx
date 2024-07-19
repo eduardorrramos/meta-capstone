@@ -17,7 +17,6 @@ function ModalPopulate() {
   const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
   const websocket = socket.current;
   const userId = sessionStorage.getItem('name')
-  // const userLocation = useRef(null);
 
 
   function openModal() {
@@ -26,11 +25,13 @@ function ModalPopulate() {
   function closeModal() {
     setIsOpen(false);
   }
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition((position) => {
-  //      const userLocation = position
-  // }) 
-  // }, []);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+       const userLocation = position
+  }) 
+  }, []);
+
   useEffect(() => {
     if (websocket) {
       websocket.addEventListener("message", (event) => {
@@ -49,7 +50,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Example Modal"
     >
-      This alert was sent by {userId} at 
+      This alert was sent by {userId} at {userLocation}
     </Modal>
   );
 }

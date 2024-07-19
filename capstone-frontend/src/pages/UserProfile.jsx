@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, React } from "react";
+import AccountMenu from "../components/newHeader";
 import Logout from "../components/logout";
 import ModalPopulate from "../components/modal";
-import React from "react";
-import axios from "axios";
 
 import {
   ListItemText,
@@ -19,7 +18,6 @@ import {
   CardActionArea,
 } from "@mui/material";
 
-import AccountMenu from "../components/newHeader";
 
 function UserProfile() {
   const [userData, setUserData] = useState([]);
@@ -33,8 +31,6 @@ function UserProfile() {
     const formData = new FormData();
     formData.set("image", file);
     formData.set("caption", caption);
-    // console.log(formData.get("caption")); // Output: "Hello World"
-    // console.log(caption)
     const response = await fetch("http://localhost:5000/userprofile", {
       method: "POST",
       body: formData,
@@ -43,7 +39,6 @@ function UserProfile() {
       },
     });
     const data = await response.json();
-    // console.log(data);
   };
 
   const fileSelected = (event) => {

@@ -8,8 +8,12 @@ function Login() {
   const onSuccess = (res) => {
     console.log("Login Success. User: ", res.profileObj);
     const individual = res.profileObj;
-    sessionStorage.setItem('name', individual.name)
-    sessionStorage.setItem('email', individual.email)
+    console.log(res.profileObj)
+    sessionStorage.setItem("name", individual.name);
+    sessionStorage.setItem("email", individual.email);
+    sessionStorage.setItem("googleid", individual.googleId);
+    sessionStorage.setItem("image", individual.imgUrl);
+
 
     const userData = {
       email: individual.email,

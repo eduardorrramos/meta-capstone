@@ -1,8 +1,9 @@
-import { useEffect, useState, useContext, useRef, createContext } from "react";
+import { useEffect, useState, useContext} from "react";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import ModalPopulate from "../components/modal";
-
+import AccountMenu from "../components/newHeader";
+import ApplicationContext from "../applicationContext";
 import {
   Typography,
   CardActionArea,
@@ -11,13 +12,13 @@ import {
   Card,
   Grid,
 } from "@mui/material";
-import AccountMenu from "../components/newHeader";
 
 function Home() {
+  const { userEmail } = useContext(ApplicationContext);
   const [readyData, setReadyData] = useState([]);
   let allMexicanBorders = [];
   const navigate = useNavigate();
-  const userId = sessionStorage.getItem("email");
+  const userId = userEmail
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
@@ -37,7 +38,7 @@ function Home() {
           <Card
             md={{ maxWidth: 300, maxHeight: 300 }}
             key={item}
-            onClick={() => crossingClick(item, userId)}
+            onClick={() => crossingClick(item)}
           >
             <CardActionArea>
               <CardMedia
@@ -77,7 +78,7 @@ function Home() {
 
   loadBorderInfo(readyData);
 
-  const crossingClick = (currBorder, userId) => {
+  const crossingClick = (currBorder) => {
     navigate(`/borderpage/${currBorder}`);
   };
   if (allMexicanBorders.length > 0) {

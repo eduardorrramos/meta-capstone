@@ -1,8 +1,6 @@
-import { useEffect, useState, useContext, useRef, createContext } from "react";
+import { useEffect, useContext } from "react";
 import ApplicationContext from "../applicationContext";
 import Modal from "react-modal";
-import { useParams } from "react-router-dom";
-
 const customStyles = {
   content: {
     top: "50%",
@@ -12,12 +10,10 @@ const customStyles = {
   },
 };
 
-
 function ModalPopulate() {
-  const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
+  const { modalIsOpen, setIsOpen, socket, userName } = useContext(ApplicationContext);
   const websocket = socket.current;
-  const userId = sessionStorage.getItem('name')
-
+  const userId = userName
 
   function openModal() {
     setIsOpen(true);
@@ -28,8 +24,8 @@ function ModalPopulate() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-       const userLocation = position
-  }) 
+      const userLocation = position;
+    });
   }, []);
 
   useEffect(() => {
@@ -40,7 +36,6 @@ function ModalPopulate() {
         }
       });
     }
-    
   }, [modalIsOpen]);
 
   return (
@@ -50,7 +45,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Example Modal"
     >
-      This alert was sent by {userId} at {userLocation}
+      This alert was sent by {userId} at 
     </Modal>
   );
 }

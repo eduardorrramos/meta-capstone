@@ -6,8 +6,8 @@ import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 
 function EmergencyContact() {
-  const { socket } = useContext(ApplicationContext);
-  const variable = sessionStorage.getItem('email')
+  const { socket, userEmail } = useContext(ApplicationContext);
+  const variable = userEmail
 
   const sendAlert = () => {
     const websocket = socket.current;

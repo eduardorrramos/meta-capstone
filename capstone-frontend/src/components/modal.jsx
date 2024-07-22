@@ -13,7 +13,6 @@ const customStyles = {
 function ModalPopulate() {
   const { modalIsOpen, setIsOpen, socket, userName } = useContext(ApplicationContext);
   const websocket = socket.current;
-  const userId = userName
 
   function openModal() {
     setIsOpen(true);
@@ -45,7 +44,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Example Modal"
     >
-      This alert was sent by {userId} at 
+      This alert was sent by {userName} at 
     </Modal>
   );
 }

@@ -37,25 +37,17 @@ function UserProfile() {
         "Content-Type": "multipart/form-data",
       },
     });
-    const data = await response.json();
   };
   const fileSelected = (event) => {
     const file = event.target.files[0];
     setFile(file);
   };
 
-
   useEffect(() => {
-    fetch("http://localhost:5000/usersposts")
+    fetch(`http://localhost:5000/userprofile/${userEmail}`)
       .then((response) => response.json())
       .then((data) => {
-        let relevantComments = [];
-        for (const item in data) {
-          if (data[item].userId == userEmail) {
-            relevantComments.push(data[item]);
-          }
-        }
-        setComments(relevantComments);
+        setComments(data);
       });
   }, []);
 

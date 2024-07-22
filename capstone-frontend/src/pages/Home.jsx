@@ -19,8 +19,7 @@ function Home() {
   const [readyData, setReadyData] = useState([]);
   let allMexicanBorders = [];
   const navigate = useNavigate();
-  const userId = userEmail;
-
+  
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
       .then((response) => response.json())
@@ -92,7 +91,7 @@ function Home() {
   if (allMexicanBorders.length > 0) {
     return (
       <div className="container">
-        <AccountMenu variable={userId} />
+        <AccountMenu variable={userEmail} />
         <Grid container spacing={2}>
           <Grid
             container

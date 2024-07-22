@@ -35,6 +35,7 @@ function BorderPage() {
   const [crossingData, setCrossingData] = useState(null);
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
+  console.log(borderIndex)
   const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
   const email = localStorage.getItem("email");
   const date = new Date();
@@ -121,20 +122,35 @@ function BorderPage() {
       .then((data) => {
         setCrossingData(data);
         const thisBorder = data.allMexicanPorts[borderIndex];
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          thisBorder.borderRegion[0] + " port of entry, Mexico"
-        )}&key=${apiKey}`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-            const newCoords = data.results[0].geometry.location;
-            const newAddress = data.results[0].formatted_address;
-            setCoordinates(newCoords);
-            setAddress(newAddress);
-          });
+        const thisBorderName = thisBorder.borderRegion[0]
+      fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setAddress(data.newAddress)
+        setCoordinates(data.newCoords)
       });
+    });
   }, [setCoordinates]);
+
+//Moved fetching coordinates to the backend
+  // useEffect(() => {
+  //     fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //     })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setAddress(data.newAddress)
+  //       setCoordinates(data.newCoords)
+  //     });
+  // }, [setCoordinates]);
 
   const fetchIndividualImage = async (location) => {
     const response = await fetch(
@@ -153,15 +169,26 @@ function BorderPage() {
     const currentBorder = crossingData.allMexicanPorts[borderIndex];
     return (
       <div>
-        <AccountMenu variable={email} />
 
         <Grid container spacing={2}>
+        
           <Grid sm={12} md={8} xs={8} sx={{ padding: "50px" }}>
+            <Typography sx={{ minWidth: 100, position: 'absolute', top: 0, left: 0 }}>
+          {" "}
+          <a
+            href={`http://localhost:5173/home`}
+            style={{ transform: "translateY(100%)" }}
+          >
+            Home
+          </a>
+        </Typography>
             <img src={imageUrl}></img>
             <img className="ImageOverlay" src={imageUrl} />
           </Grid>
 
           <Grid xs={4} sx={{ padding: "50px" }}>
+          <AccountMenu variable={email} />
+
             <Card sx={{ minHeight: "60vh", overflow: "auto", maxWidth: 500 }}>
               <CardActionArea>
                 <CardContent>

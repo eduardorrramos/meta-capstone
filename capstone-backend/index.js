@@ -64,11 +64,23 @@ function fetchAllComments() {
     await prisma.comments.delete({ where: { id:commentId } });
     res.json({ message: "Comment deleted successfully" });
   });
+  app.put("/usersposts/:id", async (req, res) => {
+    const commentId = parseInt(req.params.id);
+    const comment = await prisma.comments.findUnique({
+      where: { id: commentId },
+    });
+    const updatedComment = await prisma.comments.update({
+      where: { id: commentId },
+      data: { likes: comment.likes + 1 },
+    });
+    
+    res.json({ message: "Comment liked successfully" });
+  });
 }
 
 function createUserComment() {
   app.post("/usersposts", async (req, res) => {
-    const { id, userInput, userId, borderNum, postDate, postTime } = req.body;
+    const { id, userInput, userId, borderNum, postDate, postTime, likes } = req.body;
     const newcomment = await prisma.comments.create({
       data: {
         id,
@@ -76,7 +88,8 @@ function createUserComment() {
         borderNum,
         userInput,
         postDate,
-        postTime
+        postTime,
+        likes
       },
     });
     res.status(201).json(newcomment);

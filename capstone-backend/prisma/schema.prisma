@@ -18,13 +18,15 @@ model User {
   googleId    String 
   name        String
   imgUrl      String
-  comments    Comment[]
+  comments    Comments[]
 }
 
-model Comment {
+model Comments {
   id          Int    @id @default(autoincrement())
   userId      String 
   borderNum   String     
   userInput   String
+  postDate    String
+  postTime    String
   user        User?  @relation(fields: [userId], references: [email])
 }

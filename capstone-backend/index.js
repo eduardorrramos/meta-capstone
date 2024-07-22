@@ -3,11 +3,34 @@ const express = require("express");
 const xml2js = require("xml2js");
 const { fetchCrossingData } = require("./data-fetcher");
 require("dotenv").config();
+const multer = require( 'multer' );
+const  {S3Client} = require( '@aws-sdk/client-s3');
+const dotenv = require( 'dotenv' );
+const {PutObjectCommand} = require( '@aws-sdk/client-s3');
 
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
+dotenv.config()
+
+const storage  = multer.memoryStorage()
+const upload = multer({storage: storage})
+
+const bucketName=process.env.BUCKET_NAME
+const bucketRegion=process.env.BUCKET_REGION
+const accessKey=process.env.ACCESS_KEY
+const secretAccessKey=process.env.ACCESS_KEY
+
+upload.single('avatar')
+
+// const s4 = new S3Client({
+//   credentials: {
+//     secretAccessKey: secretAccessKey,
+//     accessKeyId: accessKey
+//   },
+//   region: bucketRegion
+// })
 
 createWebSocketNotification();
 
@@ -21,22 +44,43 @@ fetchAllComments();
 createNewUser();
 fetchAllUsers();
 
+app.get("/userprofile/uploads", async (req,res) => {
+  const posts = await prisma.uploads.findMany({orderBy: [{created: 'desc'}]})
+  res.send(posts)
+})
+postingMedia();
+
+app.delete("/userprofile/uploads/:id", async (req, res) => {
+  const id = req.params.id
+  res.send({})
+})
+
+
+function postingMedia() {
+  app.post("/userprofile", async (req, res) => {
+    console.log("req body", req.body);
+    res.send({});
+  });
+}
+
 function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {
-    const comments = await prisma.comment.findMany();
+    const comments = await prisma.comments.findMany();
     res.json(comments);
   });
 }
 
 function createUserComment() {
   app.post("/usersposts", async (req, res) => {
-    const { id, userInput, userId, borderNum } = req.body;
-    const newcomment = await prisma.comment.create({
+    const { id, userInput, userId, borderNum, postDate, postTime } = req.body;
+    const newcomment = await prisma.comments.create({
       data: {
         id,
         userId,
         borderNum,
         userInput,
+        postDate,
+        postTime
       },
     });
     res.status(201).json(newcomment);

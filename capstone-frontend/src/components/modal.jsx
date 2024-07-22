@@ -12,10 +12,12 @@ const customStyles = {
   },
 };
 
+
 function ModalPopulate() {
   const { modalIsOpen, setIsOpen, socket } = useContext(ApplicationContext);
   const websocket = socket.current;
-  const userId = useParams().userid;
+  const userId = sessionStorage.getItem('name')
+
 
   function openModal() {
     setIsOpen(true);
@@ -25,6 +27,12 @@ function ModalPopulate() {
   }
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+       const userLocation = position
+  }) 
+  }, []);
+
+  useEffect(() => {
     if (websocket) {
       websocket.addEventListener("message", (event) => {
         if (/\d/.test(event)) {
@@ -32,6 +40,7 @@ function ModalPopulate() {
         }
       });
     }
+    
   }, [modalIsOpen]);
 
   return (
@@ -41,7 +50,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Example Modal"
     >
-      This alert was sent by {userId}
+      This alert was sent by {userId} at {userLocation}
     </Modal>
   );
 }

@@ -5,18 +5,19 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-
   const onSuccess = (res) => {
     console.log("Login Success. User: ", res.profileObj);
-
     const individual = res.profileObj;
+    sessionStorage.setItem('name', individual.name)
+    sessionStorage.setItem('email', individual.email)
+
     const userData = {
       email: individual.email,
       googleId: individual.googleId,
       name: individual.name,
       imgUrl: individual.imageUrl,
     };
-    // instead of passing props thru url in app.jsx, use cookie when log users int
+
     fetch("http://localhost:5000/users")
       .then((response) => response.json())
       .then((data) => {
@@ -39,16 +40,15 @@ function Login() {
             .then((data) => console.log(data))
             .catch((error) => console.error(error));
         } else {
-          navigate(`/home/${res.profileObj.email}`);
+          navigate(`/home`);
         }
       });
-    navigate(`/home/${res.profileObj.email}`);
+    navigate(`/home`);
   };
 
   const onFailure = (res) => {
     console.log("Login Failure. User: ", res);
   };
-  //google sends you token
   return (
     <div id="signInButton">
       <GoogleLogin

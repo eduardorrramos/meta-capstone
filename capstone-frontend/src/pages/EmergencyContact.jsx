@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import ModalPopulate from "../components/modal";
 import ApplicationContext from "../applicationContext";
 import { useContext } from "react";
@@ -7,9 +6,8 @@ import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 
 function EmergencyContact() {
-  const params = useParams();
-  const variable = params.userid;
   const { socket } = useContext(ApplicationContext);
+  const variable = sessionStorage.getItem('email')
 
   const sendAlert = () => {
     const websocket = socket.current;
@@ -17,7 +15,6 @@ function EmergencyContact() {
   };
 
   return (
-    //header passed variable propm, look into this opposed to context and
     <Grid container spacing={2}>
       <AccountMenu variable={variable} />
       <Grid xs={12}>

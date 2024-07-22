@@ -1,4 +1,4 @@
-import { useEffect, useRef , createContext, useContext, useState} from "react";
+import { useEffect, useRef, createContext, useContext, useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -11,10 +11,7 @@ import UserProfile from "./pages/UserProfile";
 import BorderPage from "./pages/BorderPage";
 import ApplicationContext from "./applicationContext";
 
-
-
 function App() {
-
   const socket = useRef(null);
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -25,13 +22,12 @@ function App() {
         console.log("Server connected | WS");
       });
       socket.current.addEventListener("message", function (event) {
-        if(/\d/.test(event.data)) {
+        if (/\d/.test(event.data)) {
           const str = event.data;
           const numbers = str.match(/\d+/g);
           console.log("Server response", numbers);
           setIsOpen(true);
-        }
-        else {
+        } else {
           console.log("Server response", event.data);
         }
       });
@@ -43,25 +39,21 @@ function App() {
   }, []);
 
   return (
-    <ApplicationContext.Provider value={{modalIsOpen, setIsOpen, socket}}>
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<LogIn />} />
-          <Route path="/home/:userid" element={<Home/>} />
-          <Route path="/userprofile/:userid" element={<UserProfile />} />
-          <Route
-            path="/emergencycontact/:userid"
-            element={<EmergencyContact />}
-          />
-          <Route path="/borderpage/:borderid/:userid" element={<BorderPage />} />
-          <Route path="/faq/:userid" element={<FAQ />} />
-          <Route path="*" element={<NoPage />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ApplicationContext.Provider value={{ modalIsOpen, setIsOpen, socket }}>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<LogIn />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/emergencycontact" element={<EmergencyContact />} />
+            <Route path="/borderpage/:borderid" element={<BorderPage />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="*" element={<NoPage />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </ApplicationContext.Provider>
   );
-  
 }
 export default App;

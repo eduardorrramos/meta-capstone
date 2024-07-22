@@ -1,16 +1,18 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
 import "./BorderPage.css";
-import useSWR from "swr";
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import { useParams } from "react-router-dom";
+import { useState, useEffect, React } from "react";
+import AccountMenu from "../components/newHeader";
 import ModalPopulate from "../components/modal";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
-import { border } from "@chakra-ui/react";
 ("use client");
-const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-import { Card, CardActionArea, CardMedia, CardContent } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Grid } from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Grid,
+} from "@mui/material";
 import {
   ListItemAvatar,
   ListItem,
@@ -19,21 +21,28 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
-import React from "react";
-import AccountMenu from "../components/newHeader";
+
 
 function BorderPage() {
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
-  const userId = borderObject.userid;
+  const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
   const [coordinates, setCoordinates] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [resetPosts, setResetPost] = useState(null);
+  const [crossingData, setCrossingData] = useState(null);
+  const email = localStorage.getItem("email");
+  const date = new Date();
+
+  let currentTime = date.toLocaleTimeString();
+  let currentDate = date.toLocaleDateString();
 
   const [postData, setPostData] = useState({
-    userId: "erramoseduardo@gmail.com",
+    userId: email,
     borderNum: borderIndex,
     userInput: "",
+    postDate: currentDate,
+    postTime: currentTime,
   });
 
   function handle(input) {
@@ -41,8 +50,29 @@ function BorderPage() {
     newdata[input.target.id] = input.target.value;
     setPostData(newdata);
   }
+
   function submit(input) {
     input.preventDefault();
+    currentTime = date.toLocaleTimeString();
+    currentDate = date.toLocaleDateString();
+    let oldComments = comments;
+    const newInput = {
+      userId: email,
+      borderNum: borderIndex,
+      userInput: input.target[0].value,
+      postDate: currentDate,
+      postTime: currentTime,
+    };
+    oldComments.push(newInput);
+    setComments(oldComments);
+    setPostData({
+      userId: email,
+      borderNum: borderIndex,
+      userInput: "",
+      postDate: newInput.postDate,
+      postTime: newInput.postTime,
+    });
+
     fetch("http://localhost:5000/usersposts", {
       method: "POST",
       headers: {
@@ -53,31 +83,10 @@ function BorderPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setResetPost(data);
       })
       .catch((error) => console.error(error));
   }
-
-  useEffect(() => {}, [resetPosts]);
-
-  const { data, error, isLoading } = useSWR(
-    "http://localhost:5000/borderdata",
-    fetcher
-  );
-  const crossingData = data;
-
-  const fetchCoordinates = async (address) => {
-    const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      address
-    )}&key=${apiKey}`;
-    const response = await fetch(url);
-    const coordinateData = await response.json();
-    const newCoords = await coordinateData.results[0].geometry.location;
-    setCoordinates(newCoords);
-    return newCoords;
-  };
 
   useEffect(() => {
     fetch("http://localhost:5000/usersposts")
@@ -90,15 +99,35 @@ function BorderPage() {
           }
         }
         setComments(relevantComments);
+        console.log(relevantComments, "relevant comments");
       });
-  }, []);
+  }, [setComments]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/borderdata")
+      .then((response) => response.json())
+      .then((data) => {
+        setCrossingData(data);
+        const thisBorder = data.allMexicanPorts[borderIndex];
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          thisBorder.borderRegion[0] +
+            thisBorder.borderCrossing +
+            " port of entry, Mexico"
+        )}&key=${apiKey}`;
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            const newCoords = data.results[0].geometry.location;
+            setCoordinates(newCoords);
+          });
+      });
+  }, [setCoordinates]);
 
   if (crossingData) {
-    const thisBorder = crossingData.allMexicanPorts[borderIndex];
-    fetchCoordinates(thisBorder.borderRegion + "mexico border crossing");
+    const currentBorder = crossingData.allMexicanPorts[borderIndex];
     return (
       <div>
-        <AccountMenu variable={userId} />
+        <AccountMenu variable={email} />
         <Grid container spacing={2}>
           <Grid xs={6} sx={{ padding: "50px" }}>
             <Card sx={{ maxWidth: 400 }}>
@@ -111,35 +140,35 @@ function BorderPage() {
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h6" component="div">
-                    {thisBorder.border}
+                    {currentBorder.border}
                   </Typography>
                   <Typography gutterBottom variant="h6" component="div">
-                    Region: {thisBorder.borderRegion[0]}
+                    Region: {currentBorder.borderRegion[0]}
                   </Typography>
 
                   <Typography gutterBottom variant="body1" component="div">
-                    Crossing Name: {thisBorder.crossingName[0]}
+                    Crossing Name: {currentBorder.crossingName[0]}
                   </Typography>
                   <Typography gutterBottom variant="body1" component="div">
-                    Hours: {thisBorder.hours[0]}
+                    Hours: {currentBorder.hours[0]}
                   </Typography>
                   <Typography gutterBottom variant="body1" component="div">
-                    Vehicle Wait Time: {thisBorder.passengerVehicleWait[0]}{" "}
+                    Vehicle Wait Time: {currentBorder.passengerVehicleWait[0]}{" "}
                     minutes
                     <Typography gutterBottom variant="body1" component="div">
-                      Pedestrian Wait Time: {thisBorder.pedestrianLaneWait[0]}{" "}
-                      minutes
+                      Pedestrian Wait Time:{" "}
+                      {currentBorder.pedestrianLaneWait[0]} minutes
                     </Typography>
-                    Status: {thisBorder.portStatus[0]}
+                    Status: {currentBorder.portStatus[0]}
                   </Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
           </Grid>
           <Grid xs={6} sx={{ padding: "50px" }}>
-            <APIProvider apiKey="AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE">
+            <APIProvider apiKey={apiKey}>
               <div style={{ height: "50vh", width: "50vh" }}>
-                <Map zoom={9} center={coordinates}></Map>
+                <Map zoom={10} center={coordinates}></Map>
               </div>
             </APIProvider>
           </Grid>
@@ -165,6 +194,15 @@ function BorderPage() {
                           color="text.primary"
                         >
                           {item.userInput}
+                        </Typography>
+                        <Typography
+                          sx={{ display: "inline" }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {item.postDate}
+                          {item.postTime}
                         </Typography>
                       </React.Fragment>
                     }

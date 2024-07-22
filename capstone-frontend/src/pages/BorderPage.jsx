@@ -121,6 +121,7 @@ function BorderPage() {
       .then((response) => response.json())
       .then((data) => {
         setCrossingData(data);
+        
         const thisBorder = data.allMexicanPorts[borderIndex];
         const thisBorderName = thisBorder.borderRegion[0]
       fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
@@ -137,20 +138,6 @@ function BorderPage() {
     });
   }, [setCoordinates]);
 
-//Moved fetching coordinates to the backend
-  // useEffect(() => {
-  //     fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //     })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setAddress(data.newAddress)
-  //       setCoordinates(data.newCoords)
-  //     });
-  // }, [setCoordinates]);
 
   const fetchIndividualImage = async (location) => {
     const response = await fetch(

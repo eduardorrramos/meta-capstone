@@ -85,10 +85,18 @@ function createUserComment() {
 
 function fetchBorderData() {
   app.get("/borderdata", async (req, res) => {
-    console.log("Server receives request ")
+    const query = req.query.search
     crossingData = await fetchCrossingData();
+    console.log(crossingData)
+    if (query) {
+      const filteredPorts = crossingData.allMexicanPorts.filter((item) => {
+        return item.borderRegion[0].toLowerCase().includes(query.toLowerCase()) || 
+               item.crossingName[0].toLowerCase().includes(query.toLowerCase()) || 
+               item.border[0].toLowerCase().includes(query.toLowerCase()) ;
+      });
+      crossingData.allMexicanPorts = filteredPorts;
+    }
     res.json(crossingData);
-    console.log("This fetch is being made by BorderPage")
   });
 }
 

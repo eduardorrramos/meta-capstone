@@ -13,21 +13,23 @@ import {
   Card,
   Grid,
 } from "@mui/material";
+import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 
 function Home() {
   const { userEmail } = useContext(ApplicationContext);
   const [readyData, setReadyData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('')
   let allMexicanBorders = [];
   const navigate = useNavigate();
   
   useEffect(() => {
-    fetch("http://localhost:5000/borderdata")
+    fetch(`http://localhost:5000/borderdata?search=${searchQuery}`)
       .then((response) => response.json())
       .then((data) => {
         setReadyData(data);
       })
       .catch((err) => console.log(err));
-  }, [setReadyData]);
+  }, [searchQuery]);
 
   const loadBorderInfo = (information) => {
     allMexicanBorders = [];
@@ -88,10 +90,13 @@ function Home() {
     navigate(`/borderpage/${currBorder}`);
   };
 
-  if (allMexicanBorders.length > 0) {
+  if (allMexicanBorders) {
     return (
       <div className="container">
+        <input type="search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+
         <AccountMenu variable={userEmail} />
+        
         <Grid container spacing={2}>
           <Grid
             container

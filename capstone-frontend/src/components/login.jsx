@@ -12,8 +12,8 @@ function Login() {
     sessionStorage.setItem("name", individual.name);
     sessionStorage.setItem("email", individual.email);
     sessionStorage.setItem("googleid", individual.googleId);
-    sessionStorage.setItem("image", individual.imgUrl);
-
+    sessionStorage.setItem("image", individual.imageUrl);
+    console.log(individual.imageUrl)
 
     const userData = {
       email: individual.email,

@@ -8,6 +8,7 @@
     "@react-google-maps/api": "^2.19.3",
     "@vis.gl/react-google-maps": "^1.1.0",
     "axios": "^1.7.2",
+    "cors": "^2.8.5",
     "google-maps-react": "^2.0.6",
     "react-google-login": "^5.2.2",
     "react-google-maps": "^9.4.5",

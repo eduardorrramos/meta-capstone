@@ -7,7 +7,7 @@ const multer = require( 'multer' );
 const  {S3Client} = require( '@aws-sdk/client-s3');
 const dotenv = require( 'dotenv' );
 const {PutObjectCommand} = require( '@aws-sdk/client-s3');
-
+const cors = require('cors');
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
@@ -22,6 +22,7 @@ const bucketRegion=process.env.BUCKET_REGION
 const accessKey=process.env.ACCESS_KEY
 const secretAccessKey=process.env.ACCESS_KEY
 upload.single('avatar')
+app.use(cors())
 
 // const s4 = new S3Client({
 //   credentials: {
@@ -67,7 +68,13 @@ function fetchAllComments() {
     const comments = await prisma.comments.findMany();
     res.json(comments);
   });
+  app.delete("/usersposts/:id", async (req, res) => {
+    const commentId = parseInt(req.params.id);
+    await prisma.comments.delete({ where: { id:commentId } });
+    res.json({ message: "Comment deleted successfully" });
+  });
 }
+
 
 function createUserComment() {
   app.post("/usersposts", async (req, res) => {

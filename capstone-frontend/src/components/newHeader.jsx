@@ -10,8 +10,10 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-
+import { useContext } from "react";
+import ApplicationContext from "../applicationContext";
 export default function AccountMenu(props) {
+  const { userEmail, userName, userImg, userId } = useContext(ApplicationContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -23,7 +25,7 @@ export default function AccountMenu(props) {
   };
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center",  marginBottom: '40px' }}>
         <Typography sx={{ minWidth: 100 }}>
           {" "}
           <a
@@ -70,7 +72,7 @@ export default function AccountMenu(props) {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }} src={userImg}></Avatar>
           </IconButton>
         </Tooltip>
       </Box>

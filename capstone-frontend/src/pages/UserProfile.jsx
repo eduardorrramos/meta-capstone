@@ -19,11 +19,9 @@ import {
   CardActionArea,
 } from "@mui/material";
 
-
 function UserProfile() {
-  const [comments, setComments] = useState([]);
   const { userEmail, userName, userImg, userId } = useContext(ApplicationContext);
-  const userid = userEmail
+  const [comments, setComments] = useState([]);
   const [file, setFile] = useState();
   const [caption, setCaption] = useState("");
 
@@ -41,11 +39,11 @@ function UserProfile() {
     });
     const data = await response.json();
   };
-
   const fileSelected = (event) => {
     const file = event.target.files[0];
     setFile(file);
   };
+
 
   useEffect(() => {
     fetch("http://localhost:5000/usersposts")
@@ -61,7 +59,7 @@ function UserProfile() {
       });
   }, []);
 
-  if (userid.length > 0) {
+  if (userEmail.length > 0) {
     return (
       <div>
         <AccountMenu variable={userEmail} />

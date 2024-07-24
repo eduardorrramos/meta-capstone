@@ -5,7 +5,7 @@ import ModalPopulate from "../components/modal";
 import React from "react";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import fetchSpecificBorderComments from "./specificBorderComments";
-
+import AccountMenu from "../components/newHeader";
 ("use client");
 import {
   Card,
@@ -13,6 +13,7 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Box,
   Grid,
 } from "@mui/material";
 import {
@@ -20,20 +21,22 @@ import {
   ListItem,
   List,
   Divider,
+  Button,
   Avatar,
   ListItemText,
 } from "@mui/material";
-import AccountMenu from "../components/newHeader";
 
 function BorderPage() {
-
+  const [imageUrl, setImageUrl] = useState(null);
+  const [address, setAddress] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
   const [comments, setComments] = useState([]);
   const [resetPosts, setResetPost] = useState(null);
   const [crossingData, setCrossingData] = useState(null);
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
-  const apiKey ="AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
+  console.log(borderIndex)
+  const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
   const email = localStorage.getItem("email");
   const date = new Date();
   let currentTime = date.toLocaleTimeString();
@@ -91,82 +94,200 @@ function BorderPage() {
   }
 
   useEffect(() => {
-        async function fetchComments() {
-          const relevantComments = await fetchSpecificBorderComments(borderIndex);
-          setComments(relevantComments);
-        }
-        fetchComments();
-  }, [setComments]);
-  console.log(comments)
+    async function fetchComments() {
+      const relevantComments = await fetchSpecificBorderComments(borderIndex);
+      setComments(relevantComments);
+    }
+    fetchComments();
+  }, [resetPosts]);
+
+  function deleteComment(index) {
+    fetch(`http://localhost:5000/usersposts/${index}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://localhost:5000/usersposts/",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setResetPost(data);
+      })
+      .catch((error) => console.error(error));
+  }
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
       .then((response) => response.json())
       .then((data) => {
         setCrossingData(data);
+        
         const thisBorder = data.allMexicanPorts[borderIndex];
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          thisBorder.borderRegion[0] +
-            thisBorder.borderCrossing +
-            " port of entry, Mexico"
-        )}&key=${apiKey}`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            const newCoords = data.results[0].geometry.location;
-            setCoordinates(newCoords);
-          });
+        const thisBorderName = thisBorder.borderRegion[0]
+      fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setAddress(data.newAddress)
+        setCoordinates(data.newCoords)
       });
+    });
   }, [setCoordinates]);
 
+
+  const fetchIndividualImage = async (location) => {
+    const response = await fetch(
+      `https://images-api.nasa.gov/search?q=${location}&media_type=image`
+    );
+    const data = await response.json();
+    const newImage = await data.collection.items[0].links[0].href;
+    setImageUrl(newImage);
+  };
+
   if (crossingData) {
+    fetchIndividualImage(
+      crossingData.allMexicanPorts[borderIndex].borderRegion[0]
+    );
+
     const currentBorder = crossingData.allMexicanPorts[borderIndex];
     return (
       <div>
-        <AccountMenu variable={email} />
+
         <Grid container spacing={2}>
-          <Grid xs={6} sx={{ padding: "50px" }}>
-            <Card sx={{ maxWidth: 400 }}>
+        
+          <Grid sm={12} md={8} xs={8} sx={{ padding: "50px" }}>
+            <Typography sx={{ minWidth: 100, position: 'absolute', top: 0, left: 0 }}>
+          {" "}
+          <a
+            href={`http://localhost:5173/home`}
+            style={{ transform: "translateY(100%)" }}
+          >
+            Home
+          </a>
+        </Typography>
+            <img src={imageUrl}></img>
+            <img className="ImageOverlay" src={imageUrl} />
+          </Grid>
+
+          <Grid xs={4} sx={{ padding: "50px" }}>
+          <AccountMenu variable={email} />
+
+            <Card sx={{ minHeight: "60vh", overflow: "auto", maxWidth: 500 }}>
               <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="250"
-                  image="fawfwafwafa"
-                  alt="user google photo"
-                />
                 <CardContent>
-                  <Typography gutterBottom variant="h6" component="div">
-                    {currentBorder.border}
-                  </Typography>
-                  <Typography gutterBottom variant="h6" component="div">
-                    Region: {currentBorder.borderRegion[0]}
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    align="left"
+                    display="block"
+                  >
+                    <b>{currentBorder.borderRegion[0]}</b>
                   </Typography>
 
-                  <Typography gutterBottom variant="body1" component="div">
-                    Crossing Name: {currentBorder.crossingName[0]}
+                  <Typography
+                    gutterBottom
+                    variant="body1"
+                    align="left"
+                    component="div"
+                    color="textSecondary"
+                    fontSize="small"
+                    opacity={0.5}
+                  >
+                    Pedestrian-Friendly
                   </Typography>
-                  <Typography gutterBottom variant="body1" component="div">
-                    Hours: {currentBorder.hours[0]}
-                  </Typography>
-                  <Typography gutterBottom variant="body1" component="div">
-                    Vehicle Wait Time: {currentBorder.passengerVehicleWait[0]}{" "}
-                    minutes
-                    <Typography gutterBottom variant="body1" component="div">
-                      Pedestrian Wait Time:{" "}
-                      {currentBorder.pedestrianLaneWait[0]} minutes
+
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    align="left"
+                    margin="10px 0 0 0"
+                  >
+                    {currentBorder.pedestrianLaneWait[0] || 0} minutes Vehicle
+                    Wait
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      align="left"
+                      margin="8px 0 0 0"
+                    >
+                      {currentBorder.pedestrianLaneWait[0] || 0} minutes
+                      Pedestrian Wait
                     </Typography>
-                    Status: {currentBorder.portStatus[0]}
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      align="left"
+                      margin="8px 0 0 0"
+                    >
+                      Crossing Name: {currentBorder.crossingName[0]}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body1"
+                      component="div"
+                      align="left"
+                      display="block"
+                      margin="8px 0 0 0"
+                    >
+                      <b>Details</b>
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      align="left"
+                      margin="8px 0 0 0"
+                    >
+                      <b>Border </b>
+                      {currentBorder.border}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      align="left"
+                      margin="8px 0 0 0"
+                    >
+                      <b>Hours </b>
+
+                      {currentBorder.hours[0]}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      component="div"
+                      align="left"
+                      margin="8px 0 40px 0"
+                    >
+                      Status: {currentBorder.portStatus[0]}
+                    </Typography>
+                  </Typography>
+
+                  <APIProvider apiKey={apiKey}>
+                    <div style={{ height: "30vh", width: "30vh" }}>
+                      <Map zoom={10} center={coordinates}></Map>
+                    </div>
+                  </APIProvider>
+                  <Typography
+                    gutterBottom
+                    variant="body2"
+                    component="div"
+                    align="left"
+                    margin="8px 0 40px 0"
+                  >
+                    {address}
                   </Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
-          </Grid>
-          <Grid xs={6} sx={{ padding: "50px" }}>
-            <APIProvider apiKey={apiKey}>
-              <div style={{ height: "50vh", width: "50vh" }}>
-                <Map zoom={10} center={coordinates}></Map>
-              </div>
-            </APIProvider>
           </Grid>
 
           <Grid xs={12} sx={{ padding: "50px" }}>
@@ -196,13 +317,17 @@ function BorderPage() {
                           component="span"
                           variant="body2"
                           color="text.primary"
-                        >
-                          {item.postDate}
-                          {item.postTime}
-                        </Typography>
+                        ></Typography>
+                        {"       " + item.postDate} {item.postTime}
                       </React.Fragment>
                     }
                   />
+                  <Button
+                    onClick={() => deleteComment(item.id)}
+                    color="secondary"
+                  >
+                    Delete
+                  </Button>
                   <Divider variant="inset" component="li" />
                 </ListItem>
               ))}
@@ -218,6 +343,7 @@ function BorderPage() {
             </form>
           </Grid>
         </Grid>
+
         <ModalPopulate />
       </div>
     );

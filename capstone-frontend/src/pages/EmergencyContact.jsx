@@ -7,16 +7,15 @@ import { Grid } from "@mui/material";
 
 function EmergencyContact() {
   const { socket, userEmail } = useContext(ApplicationContext);
-  const variable = userEmail
 
   const sendAlert = () => {
     const websocket = socket.current;
-    websocket.send(`Front-End Emergency Alert: User 1${variable}`);
+    websocket.send(`Front-End Emergency Alert: User 1${userEmail}`);
   };
 
   return (
     <Grid container spacing={2}>
-      <AccountMenu variable={variable} />
+      <AccountMenu variable={userEmail} />
       <Grid xs={12}>
         <Button variant="contained" onClick={sendAlert}>
           Emergency Alert

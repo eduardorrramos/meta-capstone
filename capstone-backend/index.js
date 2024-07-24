@@ -7,29 +7,17 @@ const multer = require( 'multer' );
 const  {S3Client} = require( '@aws-sdk/client-s3');
 const dotenv = require( 'dotenv' );
 const {PutObjectCommand} = require( '@aws-sdk/client-s3');
-
+const cors = require('cors');
+const { border } = require("@chakra-ui/react");
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 dotenv.config()
-
 const storage  = multer.memoryStorage()
 const upload = multer({storage: storage})
-
-const bucketName=process.env.BUCKET_NAME
-const bucketRegion=process.env.BUCKET_REGION
-const accessKey=process.env.ACCESS_KEY
-const secretAccessKey=process.env.ACCESS_KEY
-upload.single('avatar')
-
-// const s4 = new S3Client({
-//   credentials: {
-//     secretAccessKey: secretAccessKey,
-//     accessKeyId: accessKey
-//   },
-//   region: bucketRegion
-// })
+app.use(cors())
+const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
 
 createWebSocketNotification();
 
@@ -42,12 +30,16 @@ fetchAllComments();
 
 createNewUser();
 fetchAllUsers();
+fetchBorderCoordinates();
+fetchUserComments();
+
+postingMedia();
+
 
 app.get("/userprofile/uploads", async (req,res) => {
   const posts = await prisma.uploads.findMany({orderBy: [{created: 'desc'}]})
   res.send(posts)
 })
-postingMedia();
 
 app.delete("/userprofile/uploads/:id", async (req, res) => {
   const id = req.params.id
@@ -66,6 +58,11 @@ function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {
     const comments = await prisma.comments.findMany();
     res.json(comments);
+  });
+  app.delete("/usersposts/:id", async (req, res) => {
+    const commentId = parseInt(req.params.id);
+    await prisma.comments.delete({ where: { id:commentId } });
+    res.json({ message: "Comment deleted successfully" });
   });
 }
 
@@ -88,10 +85,18 @@ function createUserComment() {
 
 function fetchBorderData() {
   app.get("/borderdata", async (req, res) => {
-    console.log("Server receives request ")
+    const query = req.query.search
     crossingData = await fetchCrossingData();
+    console.log(crossingData)
+    if (query) {
+      const filteredPorts = crossingData.allMexicanPorts.filter((item) => {
+        return item.borderRegion[0].toLowerCase().includes(query.toLowerCase()) || 
+               item.crossingName[0].toLowerCase().includes(query.toLowerCase()) || 
+               item.border[0].toLowerCase().includes(query.toLowerCase()) ;
+      });
+      crossingData.allMexicanPorts = filteredPorts;
+    }
     res.json(crossingData);
-    console.log("This fetch is being made by BorderPage")
   });
 }
 
@@ -119,6 +124,41 @@ function fetchAllUsers() {
   app.get("/users", async (req, res) => {
     const users = await prisma.user.findMany();
     res.json(users);
+  });
+}
+
+function fetchBorderCoordinates() {
+  app.get("/borderpage/:borderindex", async (req, res) => {
+    const borderName = req.params.borderindex;
+    console.log("body" + borderName)
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(borderName + " port of entry with Mexico")}&key=${apiKey}`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const newCoords = data.results[0].geometry.location;
+        const newAddress = data.results[0].formatted_address;
+        const result = {newCoords, newAddress}
+        res.json(result);
+      });
+  });
+}
+function fetchUserComments() {
+  app.get("/userprofile/:userid", async (req, res) => {
+    const userIdentificator = req.params.userid;
+    fetch("http://localhost:5000/usersposts")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        let relevantComments = [];
+        for (const item in data) {
+          //need to pass in userEmail as parameter or else will return all comments to every user
+          if (data[item].userId == userIdentificator) {
+            relevantComments.push(data[item]);
+          }
+        }
+        res.json(relevantComments);
+      }
+    );
   });
 }
 

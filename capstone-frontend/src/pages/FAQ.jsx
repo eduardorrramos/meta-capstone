@@ -2,13 +2,12 @@ import "./FAQ.css";
 import ModalPopulate from "../components/modal";
 import AccountMenu from "../components/newHeader";
 import ApplicationContext from "../applicationContext";
-
+import { useContext } from "react";
 function FAQ() {
   const { userEmail } = useContext(ApplicationContext);
-  const variable = userEmail
   return (
     <div>
-      <AccountMenu variable={variable} />
+      <AccountMenu variable={userEmail} />
       <div className="faq-container">
         <h2 className="faq">Frequently Asked Question</h2>
         <h2 className="faq">Frequently Asked Question</h2>

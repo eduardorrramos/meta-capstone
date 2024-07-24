@@ -22,7 +22,17 @@ ul {
   padding: 0;
   margin: 0;
 }
-
+.ImageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 65%;
+  height: 100%;
+  background-image: url(${imageUrl});
+  background-size: cover;
+  filter: blur(10px);
+  opacity: 0.5;
+}
 form li + li {
   margin-top: 1em;
 }

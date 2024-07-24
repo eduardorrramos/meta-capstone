@@ -1,6 +1,5 @@
 export default async function fetchSpecificBorderComments(borderIndex) {
-let relevantComments = [];
-
+  let relevantComments = [];
   fetch("http://localhost:5000/usersposts")
     .then((response) => response.json())
     .then((data) => {
@@ -11,4 +10,4 @@ let relevantComments = [];
       }
     });
   return relevantComments;
-};
+}

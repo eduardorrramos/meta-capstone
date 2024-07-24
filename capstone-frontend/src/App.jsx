@@ -18,7 +18,7 @@ function App() {
   const userEmail = sessionStorage.getItem("email");
   const userImg = sessionStorage.getItem("image");
   const userId = sessionStorage.getItem("googleid");
-
+  console.log(userImg)
   useEffect(() => {
     if (!socket.current) {
       socket.current = new WebSocket("ws://localhost:5000");

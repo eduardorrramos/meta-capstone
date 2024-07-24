@@ -44,7 +44,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Example Modal"
     >
-      This alert was sent by {userName} at 
+      This alert was sent by {userName} 
     </Modal>
   );
 }

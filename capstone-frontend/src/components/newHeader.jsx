@@ -11,11 +11,13 @@ import {
   IconButton,
 } from "@mui/material";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import ApplicationContext from "../applicationContext";
 export default function AccountMenu(props) {
   const { userEmail, userName, userImg, userId } = useContext(ApplicationContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,6 +25,10 @@ export default function AccountMenu(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const userProfileClick = () => {
+    navigate(`/userprofile`);
+  };
+  
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center",  marginBottom: '40px' }}>
@@ -33,15 +39,6 @@ export default function AccountMenu(props) {
             style={{ transform: "translateY(100%)" }}
           >
             Home
-          </a>
-        </Typography>
-        <Typography sx={{ minWidth: 100 }}>
-          {" "}
-          <a
-            href={`http://localhost:5173/userprofile`}
-            style={{ transform: "translateY(100%)" }}
-          >
-            User Profile
           </a>
         </Typography>
         <Typography sx={{ minWidth: 100 }}>
@@ -112,21 +109,12 @@ export default function AccountMenu(props) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+<MenuItem onClick={() => { handleClose(); userProfileClick(); }}>
+          <Avatar src={userImg} /> Profile
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
+   
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon></ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon></ListItemIcon>
-          Settings
-        </MenuItem>
+
         <MenuItem onClick={handleClose}>
           <ListItemIcon></ListItemIcon>
           Logout

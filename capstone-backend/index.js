@@ -8,14 +8,12 @@ const  {S3Client} = require( '@aws-sdk/client-s3');
 const dotenv = require( 'dotenv' );
 const {PutObjectCommand} = require( '@aws-sdk/client-s3');
 const cors = require('cors');
-const { border } = require("@chakra-ui/react");
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 dotenv.config()
 const storage  = multer.memoryStorage()
-const upload = multer({storage: storage})
 app.use(cors())
 const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
 

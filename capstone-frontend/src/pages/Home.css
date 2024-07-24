@@ -4,12 +4,13 @@
   border: 1px solid #111111;
   border-radius: 10px;
   width: 250px;
-  background-color: #222222; 
+  background-color: #808080; 
   display: flexbox;
   transition: background-color 0.3s ease-in-out;
 }
 .border:hover {
     background-color: snow;
+    cursor: pointer;
   }
   .words {
     color: rgb(255, 251, 247);
@@ -20,6 +21,10 @@
   }
 .container {
     position: relative;
+    background-color: #f9f9f9;
+}
+.borderCards {
+    font-family: 'Helvetica Neue', sans-serif;
 }
 .mexicanBorders{
     display: flex;
@@ -37,4 +42,16 @@
 }
 .pageInformation {
     text-align: left;
+}
+body {
+    background-color: #f9f9f9;
+}
+.borderMainTitle {
+    font-size: 15px;
+    display: flex;
+    align-items: flex-start;}
+.borderSubTitle {
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
 }

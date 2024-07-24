@@ -26,13 +26,17 @@ ul {
   position: absolute;
   top: 0;
   left: 0;
-  width: 65%;
-  height: 100%;
+  width: 800px;
+  height: 800px;
   background-image: url(${imageUrl});
   background-size: cover;
   filter: blur(10px);
   opacity: 0.5;
+  margin-top: 30px; 
+  margin-left: 30px; 
+
 }
+
 form li + li {
   margin-top: 1em;
 }

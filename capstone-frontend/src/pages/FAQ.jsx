@@ -8,14 +8,20 @@ function FAQ() {
   return (
     <div>
       <AccountMenu variable={userEmail} />
-      <div className="faq-container">
-        <h2 className="faq">Frequently Asked Question</h2>
-        <h2 className="faq">Frequently Asked Question</h2>
-        <h2 className="faq">Frequently Asked Question</h2>
-        <h2 className="faq">Frequently Asked Question</h2>
-        <h2 className="faq">Frequently Asked Question</h2>
-        <h2 className="faq">Frequently Asked Question</h2>
-      </div>
+      <section class="resources-section">
+          <h2>Resources</h2>
+          <ul>
+            <li>
+              <a href="#">Resource 1</a>
+            </li>
+            <li>
+              <a href="#">Resource 2</a>
+            </li>
+            <li>
+              <a href="#">Resource 3</a>
+            </li>
+          </ul>
+        </section>
       <ModalPopulate />
     </div>
   );

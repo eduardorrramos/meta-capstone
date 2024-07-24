@@ -25,6 +25,7 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
 
 function BorderPage() {
   const [imageUrl, setImageUrl] = useState(null);
@@ -35,7 +36,7 @@ function BorderPage() {
   const [crossingData, setCrossingData] = useState(null);
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
-  console.log(borderIndex)
+  console.log(borderIndex);
   const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
   const email = localStorage.getItem("email");
   const date = new Date();
@@ -48,6 +49,7 @@ function BorderPage() {
     userInput: "",
     postDate: currentDate,
     postTime: currentTime,
+    likes: 0,
   });
 
   function handle(input) {
@@ -67,6 +69,7 @@ function BorderPage() {
       userInput: input.target[0].value,
       postDate: currentDate,
       postTime: currentTime,
+      likes: 0,
     };
     oldComments.push(newInput);
     setComments(oldComments);
@@ -76,6 +79,7 @@ function BorderPage() {
       userInput: "",
       postDate: newInput.postDate,
       postTime: newInput.postTime,
+      likes: 0,
     });
 
     fetch("http://localhost:5000/usersposts", {
@@ -99,7 +103,7 @@ function BorderPage() {
       setComments(relevantComments);
     }
     fetchComments();
-  }, [resetPosts]);
+  }, [setResetPost]);
 
   function deleteComment(index) {
     fetch(`http://localhost:5000/usersposts/${index}`, {
@@ -115,29 +119,40 @@ function BorderPage() {
       })
       .catch((error) => console.error(error));
   }
+  function likeComment(index) {
+    fetch(`http://localhost:5000/usersposts/${index}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://localhost:5000/usersposts/",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setResetPost(data);
+      });
+  }
 
   useEffect(() => {
     fetch("http://localhost:5000/borderdata")
       .then((response) => response.json())
       .then((data) => {
         setCrossingData(data);
-        
         const thisBorder = data.allMexicanPorts[borderIndex];
-        const thisBorderName = thisBorder.borderRegion[0]
-      fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        setAddress(data.newAddress)
-        setCoordinates(data.newCoords)
+        const thisBorderName = thisBorder.borderRegion[0];
+        fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setAddress(data.newAddress);
+            setCoordinates(data.newCoords);
+          });
       });
-    });
   }, [setCoordinates]);
-
 
   const fetchIndividualImage = async (location) => {
     const response = await fetch(
@@ -155,142 +170,132 @@ function BorderPage() {
 
     const currentBorder = crossingData.allMexicanPorts[borderIndex];
     return (
-      <div>
-
-        <Grid container spacing={2}>
-        
-          <Grid sm={12} md={8} xs={8} sx={{ padding: "50px" }}>
-            <Typography sx={{ minWidth: 100, position: 'absolute', top: 0, left: 0 }}>
-          {" "}
-          <a
-            href={`http://localhost:5173/home`}
-            style={{ transform: "translateY(100%)" }}
+      <Grid container className="wholePage">
+        <Grid item md={8} xs={8} sx={{ padding: "60px" }}>
+          <Typography
+            sx={{ minWidth: 100, position: "absolute", top: 0, left: 0 }}
           >
-            Home
-          </a>
-        </Typography>
-            <img src={imageUrl}></img>
-            <img className="ImageOverlay" src={imageUrl} />
-          </Grid>
+            {" "}
+            <a
+              href={`http://localhost:5173/home`}
+              style={{ transform: "translateY(100%)" }}
+            >
+              <ArrowBack />
+            </a>
+          </Typography>
+          <img src={imageUrl}></img>
+          <img className="ImageOverlay" src={imageUrl} />
+        </Grid>
 
-          <Grid xs={4} sx={{ padding: "50px" }}>
+        <Grid item xs={4} md={4}>
           <AccountMenu variable={email} />
+          <div sx={{ minHeight: "100vh", overflow: "auto", maxWidth: 500 }}>
+            <Typography
+              gutterBottom
+              variant="h6"
+              component="div"
+              align="left"
+              display="block"
+            >
+              <b>{currentBorder.borderRegion[0]}</b>
+            </Typography>
+            <Typography
+              gutterBottom
+              variant="body1"
+              align="left"
+              component="div"
+              color="textSecondary"
+              fontSize="small"
+              opacity={0.5}
+            >
+              Pedestrian-Friendly
+            </Typography>
+            <Typography
+              gutterBottom
+              variant="body2"
+              component="div"
+              align="left"
+              margin="10px 0 0 0"
+            >
+              {currentBorder.pedestrianLaneWait[0] || 0} minutes Vehicle Wait
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                align="left"
+                margin="8px 0 0 0"
+              >
+                {currentBorder.pedestrianLaneWait[0] || 0} minutes Pedestrian
+                Wait
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                align="left"
+                margin="8px 0 0 0"
+              >
+                Crossing Name: {currentBorder.crossingName[0]}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body1"
+                component="div"
+                align="left"
+                display="block"
+                margin="8px 0 0 0"
+              >
+                <b>Details</b>
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                align="left"
+                margin="8px 0 0 0"
+              >
+                <b>Border </b>
+                {currentBorder.border}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                align="left"
+                margin="8px 0 0 0"
+              >
+                <b>Hours </b>
+                {currentBorder.hours[0]}
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="body2"
+                component="div"
+                align="left"
+                margin="8px 0 40px 0"
+              >
+                Status: {currentBorder.portStatus[0]}
+              </Typography>
+            </Typography>
+            <APIProvider apiKey={apiKey}>
+              <div style={{ height: "30vh", width: "30vh" }}>
+                <Map zoom={10} center={coordinates}></Map>
+              </div>
+            </APIProvider>
+            <Typography
+              gutterBottom
+              variant="body2"
+              component="div"
+              align="left"
+              margin="8px 0 40px 0"
+            >
+              {address}
+            </Typography>
+          </div>
+        </Grid>
 
-            <Card sx={{ minHeight: "60vh", overflow: "auto", maxWidth: 500 }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="div"
-                    align="left"
-                    display="block"
-                  >
-                    <b>{currentBorder.borderRegion[0]}</b>
-                  </Typography>
-
-                  <Typography
-                    gutterBottom
-                    variant="body1"
-                    align="left"
-                    component="div"
-                    color="textSecondary"
-                    fontSize="small"
-                    opacity={0.5}
-                  >
-                    Pedestrian-Friendly
-                  </Typography>
-
-                  <Typography
-                    gutterBottom
-                    variant="body2"
-                    component="div"
-                    align="left"
-                    margin="10px 0 0 0"
-                  >
-                    {currentBorder.pedestrianLaneWait[0] || 0} minutes Vehicle
-                    Wait
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      component="div"
-                      align="left"
-                      margin="8px 0 0 0"
-                    >
-                      {currentBorder.pedestrianLaneWait[0] || 0} minutes
-                      Pedestrian Wait
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      component="div"
-                      align="left"
-                      margin="8px 0 0 0"
-                    >
-                      Crossing Name: {currentBorder.crossingName[0]}
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body1"
-                      component="div"
-                      align="left"
-                      display="block"
-                      margin="8px 0 0 0"
-                    >
-                      <b>Details</b>
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      component="div"
-                      align="left"
-                      margin="8px 0 0 0"
-                    >
-                      <b>Border </b>
-                      {currentBorder.border}
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      component="div"
-                      align="left"
-                      margin="8px 0 0 0"
-                    >
-                      <b>Hours </b>
-
-                      {currentBorder.hours[0]}
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      component="div"
-                      align="left"
-                      margin="8px 0 40px 0"
-                    >
-                      Status: {currentBorder.portStatus[0]}
-                    </Typography>
-                  </Typography>
-
-                  <APIProvider apiKey={apiKey}>
-                    <div style={{ height: "30vh", width: "30vh" }}>
-                      <Map zoom={10} center={coordinates}></Map>
-                    </div>
-                  </APIProvider>
-                  <Typography
-                    gutterBottom
-                    variant="body2"
-                    component="div"
-                    align="left"
-                    margin="8px 0 40px 0"
-                  >
-                    {address}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-
-          <Grid xs={12} sx={{ padding: "50px" }}>
+        <Grid item xs={12} sx={{ padding: "50px" }}>
+          <div>
             Comments
             <List
               sx={{ width: "100%", maxWidth: 460, bgcolor: "background.paper" }}
@@ -318,7 +323,7 @@ function BorderPage() {
                           variant="body2"
                           color="text.primary"
                         ></Typography>
-                        {"       " + item.postDate} {item.postTime}
+                        {"       " + item.postDate} {item.postTime} {item.likes}
                       </React.Fragment>
                     }
                   />
@@ -327,6 +332,12 @@ function BorderPage() {
                     color="secondary"
                   >
                     Delete
+                  </Button>
+                  <Button
+                    onClick={() => likeComment(item.id)}
+                    color="secondary"
+                  >
+                    Upvote
                   </Button>
                   <Divider variant="inset" component="li" />
                 </ListItem>
@@ -341,11 +352,11 @@ function BorderPage() {
               ></input>
               <button>Post </button>
             </form>
-          </Grid>
-        </Grid>
+          </div>
 
-        <ModalPopulate />
-      </div>
+          <ModalPopulate />
+        </Grid>
+      </Grid>
     );
   } else {
     return <div>Loading... </div>;

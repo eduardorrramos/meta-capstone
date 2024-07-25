@@ -6,6 +6,7 @@ import React from "react";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import fetchSpecificBorderComments from "./specificBorderComments";
 import AccountMenu from "../components/newHeader";
+import ClipLoader from "react-spinners/ClipLoader";
 ("use client");
 import {
   Card,
@@ -26,6 +27,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
+import EmergencyAlert from "../components/emergencyAlert";
 
 function BorderPage() {
   const [imageUrl, setImageUrl] = useState(null);
@@ -106,6 +108,7 @@ function BorderPage() {
   }, [setResetPost]);
 
   function deleteComment(index) {
+    setComments([]); 
     fetch(`http://localhost:5000/usersposts/${index}`, {
       method: "DELETE",
       headers: {
@@ -120,6 +123,7 @@ function BorderPage() {
       .catch((error) => console.error(error));
   }
   function likeComment(index) {
+    setComments(); 
     fetch(`http://localhost:5000/usersposts/${index}`, {
       method: "PUT",
       headers: {
@@ -139,7 +143,7 @@ function BorderPage() {
       .then((data) => {
         setCrossingData(data);
         const thisBorder = data.allMexicanPorts[borderIndex];
-        const thisBorderName = thisBorder.borderRegion[0];
+        const thisBorderName = thisBorder.borderRegion[0] + thisBorder.crossingName[0];
         fetch(`http://localhost:5000/borderpage/${thisBorderName}`, {
           method: "GET",
           headers: {
@@ -164,11 +168,9 @@ function BorderPage() {
   };
 
   if (crossingData) {
-    fetchIndividualImage(
-      crossingData.allMexicanPorts[borderIndex].borderRegion[0]
-    );
-
     const currentBorder = crossingData.allMexicanPorts[borderIndex];
+    fetchIndividualImage(currentBorder.borderRegion[0]);
+    
     return (
       <Grid container className="wholePage">
         <Grid item md={8} xs={8} sx={{ padding: "60px" }}>
@@ -196,6 +198,8 @@ function BorderPage() {
               component="div"
               align="left"
               display="block"
+              margin="60px 0 0 0"
+
             >
               <b>{currentBorder.borderRegion[0]}</b>
             </Typography>
@@ -291,6 +295,7 @@ function BorderPage() {
             >
               {address}
             </Typography>
+
           </div>
         </Grid>
 
@@ -318,18 +323,20 @@ function BorderPage() {
                           {item.userInput}
                         </Typography>
                         <Typography
-                          sx={{ display: "inline" }}
+                          sx={{ display: "block" }}
                           component="span"
                           variant="body2"
-                          color="text.primary"
+                          color="text.secondary"
                         ></Typography>
-                        {"       " + item.postDate} {item.postTime} {item.likes}
+                        {"       " + item.postDate} {item.postTime} Likes{" "}
+                        {item.likes}
                       </React.Fragment>
                     }
                   />
+                  <Divider variant="inset" component="li" />
                   <Button
                     onClick={() => deleteComment(item.id)}
-                    color="secondary"
+                    color="primary"
                   >
                     Delete
                   </Button>
@@ -339,7 +346,6 @@ function BorderPage() {
                   >
                     Upvote
                   </Button>
-                  <Divider variant="inset" component="li" />
                 </ListItem>
               ))}
             </List>
@@ -359,7 +365,15 @@ function BorderPage() {
       </Grid>
     );
   } else {
-    return <div>Loading... </div>;
+
+    return(
+    <ClipLoader
+            color="#1877F2"
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />);
   }
+  
 }
 export default BorderPage;

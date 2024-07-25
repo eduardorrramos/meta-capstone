@@ -5,16 +5,19 @@ import "./Home.css";
 import ModalPopulate from "../components/modal";
 import AccountMenu from "../components/newHeader";
 import ApplicationContext from "../applicationContext";
-import {Grid, Paper, InputBase, Divider, IconButton} from "@mui/material";
+import { Grid, Paper, InputBase, Divider, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Search";
+import ClipLoader from "react-spinners/ClipLoader";
+import ApplicationFooter from "../components/newFooter";
 
 function Home() {
   const { userEmail } = useContext(ApplicationContext);
   const [readyData, setReadyData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   let allMexicanBorders = [];
   const navigate = useNavigate();
+  let [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetch(`http://localhost:5000/borderdata?search=${searchQuery}`)
@@ -30,21 +33,12 @@ function Home() {
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
-        <Grid
-          md={2.3}
-          sm={3.5}
-          key={item}
-          wrap="wrap"
-          padding={0.5}
-          onClick={() => crossingClick(item)}
-          marginBottom={3}
-        >
+        <div key={item}wrap="wrap"padding={0.5}onClick={() => crossingClick(item)} className="borderCard">
           <img
             src={cardImages[item].image}
-            component="img"
             height="250"
             weight="250"
-            alt="user google photo"
+            alt="Border Crossing Image"
             style={{
               objectFit: "cover",
               borderRadius: "10px",
@@ -52,8 +46,8 @@ function Home() {
             }}
           />
           <div>
-            <b className="borderMainTitle">{currBorder.crossingName[0]}</b>
-            <p className="borderSubTitle"> {currBorder.borderRegion[0]}</p>
+          <b className="borderMainTitle">{currBorder.crossingName[0] || (currBorder.borderRegion[0] && <b className="borderSubTitle">{currBorder.borderRegion[0]}</b>)}</b>
+          <p style={{ opacity: 0.5 }} className="borderSubTitle"> {currBorder.borderRegion[0]} </p>
             <div className="borderMainTitle">
               {currBorder.portStatus[0] === "Open" ? (
                 <span
@@ -78,7 +72,7 @@ function Home() {
               )}
             </div>
           </div>
-        </Grid>
+        </div>
       );
     }
   };
@@ -89,18 +83,22 @@ function Home() {
     navigate(`/borderpage/${currBorder}`);
   };
 
-  if (allMexicanBorders) {
+  if (allMexicanBorders.length > 0) {
     return (
-      <div className="container">
-        <Grid xs={12} container>
-          <Grid item xs={6}>
+      <div>
+        <AccountMenu variable={userEmail} />
+        
+        <Grid md={12} container className="container">
+          <Grid item xs={12} sm={12}>
             <Paper
               component="form"
+              className="Paper"
               sx={{
                 p: "2px 4px",
                 display: "flex",
                 alignItems: "center",
-                width: 400,
+                width:"20vw", 
+                height:40
               }}
             >
               <IconButton sx={{ p: "10px" }} aria-label="menu">
@@ -125,26 +123,35 @@ function Home() {
               ></IconButton>
             </Paper>
           </Grid>
-          <Grid item xs={6}>
-            <AccountMenu variable={userEmail} />
-          </Grid>
         </Grid>
-        <Grid container spacing={2} wrap="wrap" xs={12} sx={{ padding: "0px" }}>
+        <Grid container  wrap="wrap" xs={12} sx={{ marginTop:'10px', justifyContent:'center' }}>
+        <Grid item  xs={12} >
+          <b className="cardSectionHeader">Border Crossings</b>
+          </Grid>
           {allMexicanBorders}
         </Grid>
-        <Grid xs={12}>
-          <div style={{ fontSize: "12px" }}>
+        <Grid xs={12} >
+          <div style={{ fontSize: "12px", marginTop:"40px" }}>
             Last Updated Date: {readyData.lastUpdatedDate}
           </div>
-          <div style={{ fontSize: "12px" }}>
+          <div style={{ fontSize: "12px", marginBottom: "20px" }} classname="borderPageUpdateTimes">
             Last Updated Time: {readyData.lastUpdatedTime}
           </div>
         </Grid>
         <ModalPopulate />
+        <ApplicationFooter/>
       </div>
     );
   } else {
-    return <div>Loading...</div>;
+    return (
+      <ClipLoader
+        color="#1877F2"
+        loading={loading}
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    );
   }
 }
 export default Home;

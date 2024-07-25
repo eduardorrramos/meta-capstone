@@ -1,31 +1,9 @@
-.border {
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid #111111;
-  border-radius: 10px;
-  width: 250px;
-  background-color: #808080; 
-  display: flexbox;
-  transition: background-color 0.3s ease-in-out;
-}
-.border:hover {
-    background-color: snow;
-    cursor: pointer;
-  }
-  .words {
-    color: rgb(255, 251, 247);
-    transition: color 0.3s ease;
-}
-.border:hover .words {
-    color: #000; 
-  }
 .container {
     position: relative;
     background-color: #f9f9f9;
+    margin-top: 20px;
 }
-.borderCards {
-    font-family: 'Helvetica Neue', sans-serif;
-}
+
 .mexicanBorders{
     display: flex;
     flex-wrap: wrap;
@@ -54,4 +32,39 @@ body {
     font-size: 14px;
     display: flex;
     align-items: flex-start;
+}
+.borderCard {
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-family: 'Helvetica Neue', sans-serif;
+    transition: background-color 0.3s ease-in-out;
+
+}
+.borderCard:hover {
+    background-color: snow;
+    cursor: pointer;
+  }
+
+.cardSectionHeader{
+    font-size: 18px;
+    font-family: 'Helvetica Neue', sans-serif;
+    color:#111111;
+    margin-bottom: 5px;
+    top: 0;
+    left: 0;
+    float: left;
+    margin-left: 130px;
+}
+.borderPageUpdateTimes {
+    margin-bottom: 10px;
+}
+.Paper { 
+    position:relative;
+    z-index: 9999; /* Set a high z-index value to make it appear on top */
+    align-items: center;
+    justify-content: space-between;
+    top: 50%;
+    left: 0;
+    transform: translate(20%, -225%);
 }

@@ -1,23 +1,33 @@
 import * as React from "react";
+import { useContext, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import ApplicationContext from "../applicationContext";
 import {
   Typography,
   Tooltip,
   Box,
+  Paper,
   Avatar,
   Menu,
   MenuItem,
-  ListItemIcon,
+  InputBase,
   Divider,
   IconButton,
 } from "@mui/material";
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import ApplicationContext from "../applicationContext";
-export default function AccountMenu(props) {
-  const { userEmail, userName, userImg, userId } = useContext(ApplicationContext);
+import './newHeader.css';
+import Logout from "./logout";
+import SearchIcon from "@mui/icons-material/Search";
+import MenuIcon from "@mui/icons-material/Search";
+
+export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const location = useLocation();
+  const { userImg } = useContext(ApplicationContext);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+//   const context = useContext(ApplicationContext);
+//   context.searchQuery = searchQuery;
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,53 +38,49 @@ export default function AccountMenu(props) {
   const userProfileClick = () => {
     navigate(`/userprofile`);
   };
-  
+
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center",  marginBottom: '40px' }}>
-        <Typography sx={{ minWidth: 100 }}>
-          {" "}
-          <a
-            href={`http://localhost:5173/home`}
-            style={{ transform: "translateY(100%)" }}
-          >
-            Home
-          </a>
-        </Typography>
-        <Typography sx={{ minWidth: 100 }}>
-          {" "}
-          <a
-            href={`http://localhost:5173/emergencycontact`}
-            style={{ transform: "translateY(100%)" }}
-          >
-            Emergency Contact
-          </a>
-        </Typography>
-        <Typography sx={{ minWidth: 100 }}>
-          {" "}
-          <a
-            href={`http://localhost:5173/faq`}
-            style={{ transform: "translateY(100%)" }}
-          >
-            FAQ
-          </a>
-        </Typography>
 
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }} src={userImg}></Avatar>
-          </IconButton>
-        </Tooltip>
-      </Box>
+    <nav className="nav-bar"  style={{  height:'60px', backgroundColor:'#FEFDFD', width:'100%' }}>
+    {/* {location.pathname === '/home' && (
+        <div className="search-bar">
+          
+          
 
-      <Menu
+        </div>
+      )} */}
+      
+  <div className="home-faq" style={{ display: 'flex', justifyContent: 'center' }}>
+    <div className="homeIcon" style={{ marginRight: '90px', marginTop:'19px' }}>
+      <a href={`http://localhost:5173/home`}> <img src={'../src/components/homeIcon.png'} alt="Home"  style={{  height:'25px' }}/></a>
+    </div>
+    <div className="faqIcon" style={{marginTop:'17px'}}>
+      <a href={`http://localhost:5173/faq`}>    <img src={'../src/components/randomicon.png'} alt="Home"  style={{  height:'26px' }}/>
+      </a>
+    </div>
+    
+  </div>
+  
+  <div className="avatar" style={{ position: 'absolute', top: 7, right: 15 }}>
+    <Tooltip title="Account settings">
+      <IconButton
+        onClick={handleClick}
+        size="small"
+        sx={{ ml: 2 }}
+        aria-controls={open ? "account-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+      >
+        
+        <Avatar sx={{ width: 34, height: 34 }} src={userImg}></Avatar>
+      </IconButton>
+    </Tooltip>
+  </div>
+  
+</nav>
+
+<Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -109,17 +115,22 @@ export default function AccountMenu(props) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-<MenuItem onClick={() => { handleClose(); userProfileClick(); }}>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            userProfileClick();
+          }}
+        >
           <Avatar src={userImg} /> Profile
         </MenuItem>
-   
+
         <Divider />
 
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon></ListItemIcon>
-          Logout
-        </MenuItem>
+        <Logout/>
       </Menu>
-    </React.Fragment>
+      
+</React.Fragment> 
+
   );
+  
 }

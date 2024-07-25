@@ -34,20 +34,9 @@ fetchUserComments();
 postingMedia();
 
 
-app.get("/userprofile/uploads", async (req,res) => {
-  const posts = await prisma.uploads.findMany({orderBy: [{created: 'desc'}]})
-  res.send(posts)
-})
-
-app.delete("/userprofile/uploads/:id", async (req, res) => {
-  const id = req.params.id
-  res.send({})
-})
-
 
 function postingMedia() {
   app.post("/userprofile", async (req, res) => {
-    console.log("req body", req.body);
     res.send({});
   });
 }
@@ -98,7 +87,6 @@ function fetchBorderData() {
   app.get("/borderdata", async (req, res) => {
     const query = req.query.search
     crossingData = await fetchCrossingData();
-    console.log(crossingData)
     if (query) {
       const filteredPorts = crossingData.allMexicanPorts.filter((item) => {
         return item.borderRegion[0].toLowerCase().includes(query.toLowerCase()) || 
@@ -141,7 +129,6 @@ function fetchAllUsers() {
 function fetchBorderCoordinates() {
   app.get("/borderpage/:borderindex", async (req, res) => {
     const borderName = req.params.borderindex;
-    console.log("body" + borderName)
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(borderName + " port of entry with Mexico")}&key=${apiKey}`;
     fetch(url)
       .then((response) => response.json())
@@ -159,7 +146,6 @@ function fetchUserComments() {
     fetch("http://localhost:5000/usersposts")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         let relevantComments = [];
         for (const item in data) {
           //need to pass in userEmail as parameter or else will return all comments to every user

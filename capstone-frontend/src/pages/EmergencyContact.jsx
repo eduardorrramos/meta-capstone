@@ -7,7 +7,7 @@ import { Grid } from "@mui/material";
 
 function EmergencyContact() {
   const { socket, userName } = useContext(ApplicationContext);
-  let userLocation = ''
+  let userLocation = "";
   const sendAlert = () => {
     const websocket = socket.current;
     websocket.send(`Front-End Emergency Alert: User 1${userName}`);
@@ -23,8 +23,6 @@ function EmergencyContact() {
         <AccountMenu variable={userName} />
       </Grid>
       <Grid item xs={12} md={12}>
-      
-
         <section class="geolocation-section">
           <h2>Geolocation</h2>
           <p>

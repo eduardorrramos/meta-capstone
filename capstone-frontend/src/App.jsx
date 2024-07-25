@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import LogIn from "./pages/LogIn";
 import NoPage from "./pages/NoPage";
-import EmergencyContact from "./pages/EmergencyContact";
 import FAQ from "./pages/FAQ";
 import UserProfile from "./pages/UserProfile";
 import BorderPage from "./pages/BorderPage";
@@ -18,7 +17,7 @@ function App() {
   const userEmail = sessionStorage.getItem("email");
   const userImg = sessionStorage.getItem("image");
   const userId = sessionStorage.getItem("googleid");
-  console.log(userImg)
+
   useEffect(() => {
     if (!socket.current) {
       socket.current = new WebSocket("ws://localhost:5000");
@@ -50,7 +49,6 @@ function App() {
             <Route index element={<LogIn />} />
             <Route path="/home" element={<Home />} />
             <Route path="/userprofile" element={<UserProfile />} />
-            <Route path="/emergencycontact" element={<EmergencyContact />} />
             <Route path="/borderpage/:borderid" element={<BorderPage />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NoPage />} />

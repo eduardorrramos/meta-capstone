@@ -28,5 +28,6 @@ model Comments {
   userInput   String
   postDate    String
   postTime    String
+  likes       Int
   user        User?  @relation(fields: [userId], references: [email])
 }

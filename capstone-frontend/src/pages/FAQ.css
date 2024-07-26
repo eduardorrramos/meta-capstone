@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
+    width:100%
 }
 .faq {
     background-color: #333;
@@ -12,4 +13,11 @@
     margin-bottom: 20px;
     border: 1px solid #ddd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; height: auto;
+}
+.pageTitle {
+    margin-top: 35px;
+}
+.wholeContainer {
+    border-top: 0;
 }

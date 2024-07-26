@@ -39,11 +39,11 @@ export   const cardImages = [
       },
       {
         id: 10,
-        image: ('https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg/1200px-Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg'),
+        image: ('https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Civic_Center_1.jpg/520px-Civic_Center_1.jpg'),
       },
       {
         id: 11,
-        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg/1200px-Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSKldzz4YPh8BLaZiqQnv5kzAz4IatuGiuhg&s',
         city: 'Los Paso'
       },
       {
@@ -52,7 +52,7 @@ export   const cardImages = [
       },
       {
         id: 13,
-        image: ('https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg/1200px-Los_Algodones%2C_Baja_California_%2820876502950%29_%28cropped%29.jpg'),
+        image: ('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvlXAyGehJVyNAopxBDT-rdgu1K9VZ2lgwjA&s'),
       },
       {
           id: 14,

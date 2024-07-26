@@ -1,0 +1,26 @@
+.login-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.login-button {
+  margin: 10px;
+}
+.description-container {
+  margin: 20px;
+  margin-top: 50px;
+}
+.description-container h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+.description-container p {
+margin-top: 20px;
+  font-size: 16px;
+}
+.description-container img {
+  margin-top: 50px;
+  height: auto;
+  width: 500px;
+  height: 150px;
+}

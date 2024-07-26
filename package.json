@@ -11,12 +11,14 @@
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "google-maps-react": "^2.0.6",
+    "openai": "^4.53.2",
     "react-google-login": "^5.2.2",
     "react-google-maps": "^9.4.5",
     "react-modal": "^3.16.1",
     "react-navigation": "^5.0.0",
     "react-router-dom": "^6.24.1",
     "swr": "^2.2.5",
+    "unsplash-js": "^7.0.19",
     "ws": "^8.18.0"
   }
 }

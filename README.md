@@ -2,37 +2,34 @@
 
 ### Migra
 
-Created by: Eduardo Ramos
-
-Deployed Application: [ ]
+Developed by Eduardo Ramos.
 
 ### Application Features
 
 #### CORE FEATURES
 
-- [ ] **Log In Screen**
-  - [ ] User can log in.
-  - [ ] User can log out. 
-  - [ ] User can create an account.
-- [ ] **User Profile Screen**
-  - [ ] User can view their username.
-  - [ ] User can view their password. 
-- [ ] **Home Page Screen**
-  - [ ] User can search for a specific border crossing.
-  - [ ] User view wait times for border crossings.
-  - [ ] User can see a grid of border crossing locations.
-  - [ ] User can navigate from this screen to the FAQ and SOS pages.
-- [ ] **Border Page Screen**
-  - [ ] User view wait time for a specific border crossing.
-  - [ ] User can view a feed of posts for a specific border crossing page.
-  - [ ] User can like and create/delete text posts under a specific border crossing page.
-- [ ] **Emergency Contact Screen**
-  - [ ] User can view their registered emergency contacts.
-  - [ ] User can prompt a call upon clicking a specific contact.
-- [ ] **Frequently Asked Question Screen**
-  - [ ] User can view a series of questions upon page opening.
-  - [ ] User click on specific questions and open a modal with more information.
-
+- [X] **Log In Screen**
+  - [X] User can log in.
+  - [X] User can log out. 
+  - [X] User can create an account.
+- [X] **User Profile Screen**
+  - [X] User can view their username.
+  - [X] User can view their password. 
+- [X] **Home Page Screen**
+  - [X] User can search for a specific border crossing.
+  - [X] User view wait times for border crossings.
+  - [X] User can see a grid of border crossing locations.
+  - [X] User can navigate from this screen to the FAQ and SOS pages.
+- [X] **Border Page Screen**
+  - [X] User view wait time for a specific border crossing.
+  - [X] User can view a feed of posts for a specific border crossing page.
+  - [X] User can like and create/delete text posts under a specific border crossing page.
+- [X] **Emergency Contact Screen**
+  - [X] User can view their registered emergency contacts.
+  - [X] User can prompt a call upon clicking a specific contact.
+- [X] **Frequently Asked Question Screen**
+  - [X] User can view a series of questions upon page opening.
+  - [X] User click on specific questions and open a modal with more information.
 
 #### STRETCH FEATURES
 
@@ -41,8 +38,3 @@ Deployed Application: [ ]
 - [ ] **User Can Create Multi-Media Comments**
 - [ ] **User Can Receive Notifications of Updated Border Wait Times**
 - [ ] **User Can Edit Their Profile Information**
-
-### Walkthrough Video
-
-
-### Reflection

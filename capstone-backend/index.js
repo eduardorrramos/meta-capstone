@@ -3,18 +3,14 @@ const express = require("express");
 const xml2js = require("xml2js");
 const { fetchCrossingData } = require("./data-fetcher");
 require("dotenv").config();
-const multer = require( 'multer' );
-const  {S3Client} = require( '@aws-sdk/client-s3');
-const dotenv = require( 'dotenv' );
-const {PutObjectCommand} = require( '@aws-sdk/client-s3');
-const cors = require('cors');
+const dotenv = require("dotenv");
+const cors = require("cors");
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
-dotenv.config()
-const storage  = multer.memoryStorage()
-app.use(cors())
+dotenv.config();
+app.use(cors());
 const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
 
 createWebSocketNotification();
@@ -31,16 +27,6 @@ fetchAllUsers();
 fetchBorderCoordinates();
 fetchUserComments();
 
-postingMedia();
-
-
-
-function postingMedia() {
-  app.post("/userprofile", async (req, res) => {
-    res.send({});
-  });
-}
-
 function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {
     const comments = await prisma.comments.findMany();
@@ -48,7 +34,7 @@ function fetchAllComments() {
   });
   app.delete("/usersposts/:id", async (req, res) => {
     const commentId = parseInt(req.params.id);
-    await prisma.comments.delete({ where: { id:commentId } });
+    await prisma.comments.delete({ where: { id: commentId } });
     res.json({ message: "Comment deleted successfully" });
   });
   app.put("/usersposts/:id", async (req, res) => {
@@ -60,14 +46,14 @@ function fetchAllComments() {
       where: { id: commentId },
       data: { likes: comment.likes + 1 },
     });
-    
     res.json({ message: "Comment liked successfully" });
   });
 }
 
 function createUserComment() {
   app.post("/usersposts", async (req, res) => {
-    const { id, userInput, userId, borderNum, postDate, postTime, likes } = req.body;
+    const { id, userInput, userId, borderNum, postDate, postTime, likes } =
+      req.body;
     const newcomment = await prisma.comments.create({
       data: {
         id,
@@ -76,7 +62,7 @@ function createUserComment() {
         userInput,
         postDate,
         postTime,
-        likes
+        likes,
       },
     });
     res.status(201).json(newcomment);
@@ -85,13 +71,15 @@ function createUserComment() {
 
 function fetchBorderData() {
   app.get("/borderdata", async (req, res) => {
-    const query = req.query.search
+    const query = req.query.search;
     crossingData = await fetchCrossingData();
     if (query) {
       const filteredPorts = crossingData.allMexicanPorts.filter((item) => {
-        return item.borderRegion[0].toLowerCase().includes(query.toLowerCase()) || 
-               item.crossingName[0].toLowerCase().includes(query.toLowerCase()) || 
-               item.border[0].toLowerCase().includes(query.toLowerCase()) ;
+        return (
+          item.borderRegion[0].toLowerCase().includes(query.toLowerCase()) ||
+          item.crossingName[0].toLowerCase().includes(query.toLowerCase()) ||
+          item.border[0].toLowerCase().includes(query.toLowerCase())
+        );
       });
       crossingData.allMexicanPorts = filteredPorts;
     }
@@ -103,14 +91,11 @@ function createWebSocketNotification() {
   const WebSocket = require("ws");
   const server = require("http").createServer(app);
   server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
   });
   const wss = new WebSocket.Server({ server: server });
   wss.on("connection", (ws) => {
-    console.log("New client connected!");
     ws.send("Welcome to the server!");
     ws.on("message", (message) => {
-      console.log(`Received message: ${message}`);
       let userId = message;
       wss.clients.forEach((client) => {
         client.send(`Emergency Alert from Back-End: ${userId}`);
@@ -129,13 +114,15 @@ function fetchAllUsers() {
 function fetchBorderCoordinates() {
   app.get("/borderpage/:borderindex", async (req, res) => {
     const borderName = req.params.borderindex;
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(borderName + " port of entry with Mexico")}&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      borderName + " port of entry with Mexico"
+    )}&key=${apiKey}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         const newCoords = data.results[0].geometry.location;
         const newAddress = data.results[0].formatted_address;
-        const result = {newCoords, newAddress}
+        const result = { newCoords, newAddress };
         res.json(result);
       });
   });
@@ -148,14 +135,12 @@ function fetchUserComments() {
       .then((data) => {
         let relevantComments = [];
         for (const item in data) {
-          //need to pass in userEmail as parameter or else will return all comments to every user
           if (data[item].userId == userIdentificator) {
             relevantComments.push(data[item]);
           }
         }
         res.json(relevantComments);
-      }
-    );
+      });
   });
 }
 

@@ -1,15 +1,15 @@
+import "./Home.css";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { cardImages } from "./boardImages";
-import "./Home.css";
 import ModalPopulate from "../components/modal";
-import AccountMenu from "../components/newHeader";
+import AccountMenu from "../components/header";
 import ApplicationContext from "../applicationContext";
 import { Grid, Paper, InputBase, Divider, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Search";
 import ClipLoader from "react-spinners/ClipLoader";
-import ApplicationFooter from "../components/newFooter";
+import PermanentDrawerLeft from "../components/homeSideBar";
 
 function Home() {
   const { userEmail } = useContext(ApplicationContext);
@@ -33,21 +33,35 @@ function Home() {
     for (const item in information.allMexicanPorts) {
       let currBorder = information.allMexicanPorts[item];
       allMexicanBorders.push(
-        <div key={item}wrap="wrap"padding={0.5}onClick={() => crossingClick(item)} className="borderCard">
-          <img
-            src={cardImages[item].image}
-            height="250"
-            weight="250"
-            alt="Border Crossing Image"
-            style={{
-              objectFit: "cover",
-              borderRadius: "10px",
-              width: "230px",
-            }}
-          />
+        <div
+          key={item}
+          wrap="wrap"
+          padding={0.5}
+          onClick={() => crossingClick(item)}
+          className="borderCard"
+        >
           <div>
-          <b className="borderMainTitle">{currBorder.crossingName[0] || (currBorder.borderRegion[0] && <b className="borderSubTitle">{currBorder.borderRegion[0]}</b>)}</b>
-          <p style={{ opacity: 0.5 }} className="borderSubTitle"> {currBorder.borderRegion[0]} </p>
+            <img
+              src={cardImages[item].image}
+              height="250"
+              weight="250"
+              alt="Border Crossing Image"
+              style={{
+                objectFit: "cover",
+                borderRadius: "10px",
+                width: "230px",
+              }}
+            />
+            <b className="borderMainTitle">
+              {currBorder.crossingName[0] ||
+                (currBorder.borderRegion[0] && (
+                  <b className="borderSubTitle">{currBorder.borderRegion[0]}</b>
+                ))}
+            </b>
+            <p style={{ opacity: 0.5 }} className="borderSubTitle">
+              {" "}
+              {currBorder.borderRegion[0]}{" "}
+            </p>
             <div className="borderMainTitle">
               {currBorder.portStatus[0] === "Open" ? (
                 <span
@@ -85,11 +99,26 @@ function Home() {
 
   if (allMexicanBorders.length > 0) {
     return (
-      <div>
-        <AccountMenu variable={userEmail} />
-        
-        <Grid md={12} container className="container">
-          <Grid item xs={12} sm={12}>
+      <Grid
+        container
+        direction="row"
+        style={{ height: "100vh", width: "100vw", backgroundColor: "#f0f2f5" }}
+        justifyContent="center"
+        alignItems="stretch"
+      >
+        <AccountMenu
+          variable={userEmail}
+          sx={{ zIndex: 1000, position: "sticky", top: 0, left: 0 }}
+        />
+        <Grid
+          container
+          direction="row"
+          style={{ height: "100vh", width: "100vw" }}
+          justifyContent="center"
+          alignItems="stretch"
+        >
+          <Grid item xs={6} sm={4} md={2} Lg={2}>
+            <PermanentDrawerLeft />
             <Paper
               component="form"
               className="Paper"
@@ -97,8 +126,10 @@ function Home() {
                 p: "2px 4px",
                 display: "flex",
                 alignItems: "center",
-                width:"20vw", 
-                height:40
+                width: "200px",
+                height: 40,
+                top: -10,
+                position: "fixed",
               }}
             >
               <IconButton sx={{ p: "10px" }} aria-label="menu">
@@ -123,24 +154,39 @@ function Home() {
               ></IconButton>
             </Paper>
           </Grid>
-        </Grid>
-        <Grid container  wrap="wrap" xs={12} sx={{ marginTop:'10px', justifyContent:'center' }}>
-        <Grid item  xs={12} >
-          <b className="cardSectionHeader">Border Crossings</b>
+          <Grid
+            item
+            wrap="wrap"
+            style={{ marginTop: "60px" }}
+            xs={6}
+            sm={8}
+            md={10}
+            Lg={10}
+          >
+            <Grid
+              container
+              wrap="wrap"
+              xs={12}
+              sx={{ marginTop: "10px", justifyContent: "center" }}
+            >
+              <Grid item xs={12}>
+                <b className="cardSectionHeader">Border Crossings</b>
+              </Grid>
+              {allMexicanBorders}
+            </Grid>
+            <div style={{ fontSize: "12px", marginTop: "40px" }}>
+              Last Updated Date: {readyData.lastUpdatedDate}
+            </div>
+            <div
+              style={{ fontSize: "12px", marginBottom: "20px" }}
+              classname="borderPageUpdateTimes"
+            >
+              Last Updated Time: {readyData.lastUpdatedTime}
+            </div>
           </Grid>
-          {allMexicanBorders}
-        </Grid>
-        <Grid xs={12} >
-          <div style={{ fontSize: "12px", marginTop:"40px" }}>
-            Last Updated Date: {readyData.lastUpdatedDate}
-          </div>
-          <div style={{ fontSize: "12px", marginBottom: "20px" }} classname="borderPageUpdateTimes">
-            Last Updated Time: {readyData.lastUpdatedTime}
-          </div>
         </Grid>
         <ModalPopulate />
-        <ApplicationFooter/>
-      </div>
+      </Grid>
     );
   } else {
     return (

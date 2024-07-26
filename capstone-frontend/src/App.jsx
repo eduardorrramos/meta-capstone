@@ -1,6 +1,6 @@
-import { useEffect, useRef, createContext, useContext, useState } from "react";
-import "./App.css";
+import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
 
 import Home from "./pages/Home";
 import LogIn from "./pages/LogIn";
@@ -21,28 +21,26 @@ function App() {
   useEffect(() => {
     if (!socket.current) {
       socket.current = new WebSocket("ws://localhost:5000");
-      socket.current.addEventListener("open", function (event) {
-        console.log("Server connected | WS");
-      });
       socket.current.addEventListener("message", function (event) {
         if (/\d/.test(event.data)) {
-          const str = event.data;
-          const numbers = str.match(/\d+/g);
-          console.log("Server response", numbers);
           setIsOpen(true);
-        } else {
-          console.log("Server response", event.data);
         }
       });
-      socket.current.onopen = (event) => {
-        socket.current.send("here's some text");
-      };
-    } else {
     }
   }, []);
 
   return (
-    <ApplicationContext.Provider value={{ modalIsOpen, setIsOpen, socket, userName, userEmail, userImg, userId }}>
+    <ApplicationContext.Provider
+      value={{
+        modalIsOpen,
+        setIsOpen,
+        socket,
+        userName,
+        userEmail,
+        userImg,
+        userId,
+      }}
+    >
       <div>
         <BrowserRouter>
           <Routes>

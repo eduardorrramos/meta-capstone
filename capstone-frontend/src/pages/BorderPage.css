@@ -11,10 +11,9 @@ body {
 }
 
 form {
-  display: inline-block;
-  padding: 1em;
-  border: 1px solid #ccc;
-  border-radius: 1em;
+  float: left;
+  margin-top: 30px;
+  margin-left: 20px;
 }
 
 ul {
@@ -26,17 +25,21 @@ ul {
   position: absolute;
   top: 0;
   left: 0;
-  width: 800px;
-  height: 800px;
+  width: 100%;
+  height: 700px;
   background-image: url(${imageUrl});
-  background-size: cover;
+  background-size: auto;
   filter: blur(10px);
   opacity: 0.5;
-  margin-top: 30px; 
-  margin-left: 30px; 
-
 }
+.imageUnderlay {
+  margin-top: 90px;
+  width: 30vw;
+  display: block;
 
+  margin-left: auto;
+  margin-right: auto;
+}
 form li + li {
   margin-top: 1em;
 }
@@ -71,4 +74,8 @@ textarea {
 
 button {
   margin-left: 0.5em;
+}
+
+.borderInfo {
+  background-color: beige;
 }

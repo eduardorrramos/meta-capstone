@@ -2,7 +2,7 @@ import { useEffect, useContext , useState} from "react";
 import ApplicationContext from "../applicationContext";
 import Modal from "react-modal";
 import Alert from '@mui/material/Alert';
-            import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
 const customStyles = {
   content: {
     top: "50%",
@@ -24,7 +24,7 @@ function ModalPopulate() {
     useContext(ApplicationContext);
   const [userLatitude, setUserLatitude] = useState(null);
   const [userLongitude, setUserLongitude] = useState(null);
-  const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
+  const apiKey = import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 
   const websocket = socket.current;
@@ -64,12 +64,7 @@ function ModalPopulate() {
       style={customStyles}
       contentLabel="Emergency Modal"
     >
-      This alert was sent by {userName} at {userLongitude}, {userLatitude}!
-       {/* <APIProvider apiKey={apiKey}>
-              <div style={{ height: "30vh", width: "30vh" }}>
-                <Map zoom={10} center={[userLatitude, userLongitude]}></Map>
-              </div>
-            </APIProvider> */}
+      Alert sent by {userName} at ( {userLongitude}, {userLatitude} )
     </Modal>
   );
 }

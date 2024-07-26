@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const navigate = useNavigate();
   const onSuccess = (res) => {
-    console.log("Login Success. User: ", res.profileObj);
     const individual = res.profileObj;
     sessionStorage.setItem("name", individual.name);
     sessionStorage.setItem("email", individual.email);
@@ -48,9 +47,7 @@ function Login() {
     navigate(`/home`);
   };
 
-  const onFailure = (res) => {
-    console.log("Login Failure. User: ", res);
-  };
+  const onFailure = (res) => {};
   return (
     <div id="signInButton">
       <GoogleLogin

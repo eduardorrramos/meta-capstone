@@ -19,6 +19,7 @@ model User {
   name        String
   imgUrl      String
   comments    Comments[]
+  bookmarks   Bookmarks[]
 }
 
 model Comments {
@@ -30,4 +31,10 @@ model Comments {
   postTime    String
   likes       Int
   user        User?  @relation(fields: [userId], references: [email])
+}
+
+model Bookmarks {
+  borderIndex           String @id
+  userEmail             String
+  user                  User?  @relation(fields: [userEmail], references: [email])
 }

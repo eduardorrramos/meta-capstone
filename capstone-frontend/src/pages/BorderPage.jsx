@@ -18,7 +18,6 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
-
 import Drawer from "@mui/material/Drawer";
 
 function BorderPage() {
@@ -31,10 +30,11 @@ function BorderPage() {
   const borderObject = useParams();
   const borderIndex = borderObject.borderid;
   const apiKey = "AIzaSyDnk1NQgt08aY9-4tS0ZcG9WvzJc7hsuWE";
-  const email = localStorage.getItem("email");
+  const email = sessionStorage.getItem("email");
   const date = new Date();
   let currentTime = date.toLocaleTimeString();
   let currentDate = date.toLocaleDateString();
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const [postData, setPostData] = useState({
     userId: email,
@@ -163,6 +163,63 @@ function BorderPage() {
     setImageUrl(newImage);
   };
 
+  const bookmarkCrossing = (borderIndex) => {
+    console.log(borderIndex)
+    if (!isBookmarked) {
+    fetch(`http://localhost:5000/userprofile/${borderIndex}?email=${email}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://localhost:5000/usersposts/",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+      setIsBookmarked(true)
+    }
+    else {
+      setIsBookmarked(false)
+      async function deleteBookmark(borderIndex) {
+        await fetch(`http://localhost:5000/bookmarked/${borderIndex}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://localhost:5000/usersposts/",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+          })
+          .catch((error) => console.error(error));
+      }
+      deleteBookmark(borderIndex)
+    }
+  };
+
+  useEffect(() => {
+    const getBookmarks = () => {
+      fetch(`http://localhost:5000/bookmarked/${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:5000/usersposts/",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          for (const item in data) {
+            if (data[item].borderIndex === borderIndex){
+              setIsBookmarked(true)
+            }
+          }
+        });
+    };
+    getBookmarks();
+  }, [email, borderIndex, setIsBookmarked]);
+
   if (crossingData) {
     const currentBorder = crossingData.allMexicanPorts[borderIndex];
     fetchIndividualImage(currentBorder.borderRegion[0]);
@@ -192,13 +249,16 @@ function BorderPage() {
           </Grid>
           <Grid item xs={6} sm={4} md={4} Lg={4}>
             <Drawer anchor="right" variant="permanent" sx={{ zIndex: 100 }}>
+            <Button variant="contained" onClick={() => bookmarkCrossing(borderIndex)} sx={{marginTop:'40px'}}>
+  {isBookmarked ? 'Unbookmark' : 'Bookmark'}
+</Button>
               <Typography
                 gutterBottom
                 variant="h6"
                 component="div"
                 align="left"
                 display="block"
-                margin="60px 5px 0 5px"
+                margin="30px 5px 0 5px"
               >
                 <b>{currentBorder.borderRegion[0]}</b>
               </Typography>

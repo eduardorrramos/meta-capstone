@@ -65,6 +65,19 @@ export default function AccountMenu() {
               />
             </a>
           </div>
+          <div
+            className="homeIcon"
+            style={{ marginRight: "90px", marginTop: "12px" }}
+          >
+            <a href={`http://localhost:5173/bookmarked`}>
+              {" "}
+              <img
+                src={"../src/components/png/newHomeIcon.png"}
+                alt="Home"
+                style={{ height: "30px", marginLeft:'90px' }}
+              />
+            </a>
+          </div>
         </div>
 
         <div

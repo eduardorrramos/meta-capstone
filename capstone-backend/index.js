@@ -27,6 +27,8 @@ fetchAllUsers();
 fetchBorderCoordinates();
 fetchUserComments();
 
+bookmarkCrossing();
+
 function fetchAllComments() {
   app.get("/usersposts", async (req, res) => {
     const comments = await prisma.comments.findMany();
@@ -143,6 +145,46 @@ function fetchUserComments() {
       });
   });
 }
+
+function bookmarkCrossing() {
+  app.put("/userprofile/:borderindex", async (req, res) => {
+    const borderIndex = req.params.borderindex;
+    const userEmail = req.query.email;
+        async function postBookmark ()  {
+          const newBookmark = await prisma.bookmarks.create({
+            data: {
+              borderIndex,
+              userEmail,
+            },
+          });
+          res.json(newBookmark);
+        }
+        postBookmark()
+  });
+  app.get("/bookmarked/:userEmail", async (req, res) => {
+    const userEmail = req.params.userEmail;
+    const userBookmarked = await prisma.bookmarks.findMany({
+      where: { userEmail: userEmail },
+    });
+    res.json(userBookmarked);
+  });
+  app.delete("/bookmarked/:borderIndex", async (req, res) => {
+    const borderIndex = req.params.borderIndex;
+    await prisma.bookmarks.delete({ where: { borderIndex: borderIndex } });
+    res.json({ message: "bookmark deleted successfully" });
+  });
+}
+  // app.delete("/usersposts/:id", async (req, res) => {
+  //   const commentId = parseInt(req.params.id);
+  //   await prisma.comments.delete({ where: { id: commentId } });
+  //   res.json({ message: "Comment deleted successfully" });
+  // });
+  //   const comment = await prisma.comments.findUnique({
+  //     where: { id: commentId },
+  //   });
+
+
+
 
 function createNewUser() {
   app.post("/users", async (req, res) => {

@@ -9,7 +9,7 @@ import FAQ from "./pages/FAQ";
 import UserProfile from "./pages/UserProfile";
 import BorderPage from "./pages/BorderPage";
 import ApplicationContext from "./applicationContext";
-
+import Bookmarked from "./pages/Bookmarked";
 function App() {
   const socket = useRef(null);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -47,6 +47,7 @@ function App() {
             <Route index element={<LogIn />} />
             <Route path="/home" element={<Home />} />
             <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/bookmarked" element={<Bookmarked />} />
             <Route path="/borderpage/:borderid" element={<BorderPage />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NoPage />} />
